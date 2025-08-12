@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeroSocials from "./social-links";
+import HeroAvatar from "./hero-avatar";
 
 export default function HeroSection() {
   const { scrollYProgress } = useScroll();
@@ -36,7 +37,9 @@ export default function HeroSection() {
   return (
 <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
 <HeroSocials /> 
-      <div className="relative z-10 mx-auto max-w-4xl px-4 text-center">
+<div className="relative z-10 mx-auto max-w-4xl px-4 text-center">
+      <HeroAvatar />
+
         <motion.h1
           style={{ y: yTitle }}
           className="mb-6 bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-5xl font-bold text-transparent dark:from-white dark:via-blue-300 dark:to-purple-300 sm:text-6xl lg:text-7xl"

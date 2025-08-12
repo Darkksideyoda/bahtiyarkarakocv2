@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { ParallaxY, Reveal } from "@/components/motion/reveal";
 
 export type ExperienceItem = {
   id: string;
@@ -19,6 +20,7 @@ export type ExperienceItem = {
 
 const demoItems: ExperienceItem[] = [
   {
+    logoUrl:"https://media.licdn.com/dms/image/v2/D4D0BAQGE9uQ3sKanwg/company-logo_200_200/company-logo_200_200/0/1698674245320/borda_technology_logo?e=1758153600&v=beta&t=uDUVS8v0na_vSU33oB4x96Hz3CwZG437u-vx1slGWPs",
     id: "borda-se",
     company: "Borda Technology",
     role: "Software Engineer",
@@ -32,6 +34,7 @@ const demoItems: ExperienceItem[] = [
     tags: ["JavaScript", "Algorithm Design"],
   },
   {
+    logoUrl:"https://media.licdn.com/dms/image/v2/D4D0BAQGE9uQ3sKanwg/company-logo_200_200/company-logo_200_200/0/1698674245320/borda_technology_logo?e=1758153600&v=beta&t=uDUVS8v0na_vSU33oB4x96Hz3CwZG437u-vx1slGWPs",
     id: "borda-intern",
     company: "Borda Technology",
     role: "Software Engineer Intern",
@@ -43,9 +46,36 @@ const demoItems: ExperienceItem[] = [
       "Developed prototypes, tested features, and contributed to UI improvements.",
     tags: ["React", "TypeScript"],
   },
+  {
+    logoUrl:"https://media.licdn.com/dms/image/v2/D4D0BAQFAd7w-hI3Zbw/company-logo_200_200/company-logo_200_200/0/1737619087276?e=1758153600&v=beta&t=vPzObvJpjC890eWXieGd3fUBss-ZV1Y9hSemZqMPx-U",
+    id: "antalya-ataturk-state-hospital-intern",
+    company: "Antalya Atatürk State Hospital",
+    role: "Software Engineer Intern",
+    type: "Internship",
+    period: "Jun 2022 – Oct 2022 · 5 mos",
+    location: "Antalya, Türkiye",
+    summary: "Emergency Screens",
+    details:
+      "Developed prototypes, tested features, and contributed to UI improvements.",
+    tags: ["React", "TypeScript"],
+  },
+  {
+    logoUrl:"https://dosya.kmu.edu.tr/kmu/userfiles/images/Bas%C4%B1n/KM%C3%9C%20Logo%20Tr.png",
+    id: "kmu-intern",
+    company: "Antalya Atatürk State Hospital",
+    role: "Software Engineer Intern",
+    type: "Internship",
+    period: "Jun 2022 – Oct 2022 · 5 mos",
+    location: "Antalya, Türkiye",
+    summary: "Emergency Screens",
+    details:
+      "Developed prototypes, tested features, and contributed to UI improvements.",
+    tags: ["React", "TypeScript"],
+  },
 ];
 
-/* -------- Small parts -------- */
+
+/* Small parts */
 const Tag: React.FC<{ label: string }> = ({ label }) => (
   <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-xs text-white/80">
     {label}
@@ -58,7 +88,7 @@ const Logo: React.FC<{ url?: string; alt: string }> = ({ url, alt }) => (
   </div>
 );
 
-/* -------- Animated loop node (organik halka) -------- */
+/* Loop node */
 const LoopNode: React.FC = () => (
   <div className="relative h-6 w-6">
     <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-400 via-fuchsia-400 to-rose-400 opacity-40 blur-[6px]" />
@@ -100,7 +130,7 @@ const LoopNode: React.FC = () => (
   </div>
 );
 
-/* -------- Main -------- */
+/* Main */
 export const ExperiencePath: React.FC<{
   items?: ExperienceItem[];
   title?: string;
@@ -108,55 +138,77 @@ export const ExperiencePath: React.FC<{
 }> = ({ items = demoItems, title = "Experience", id = "experience" }) => {
   const [openId, setOpenId] = useState<string | null>(null);
 
+  // Scroll progress for the section
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    // progress starts when üst kısmın %80'i viewport'a girince, biter alt %20 çıkınca
+    offset: ["start 80%", "end 20%"],
+  });
+
+  // Parallax for title; line grow
+  const titleY = useTransform(scrollYProgress, [0, 1], [20, -10]);
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
+  const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const lineOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
+
   return (
     <section id={id} className="relative w-full py-24">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div ref={sectionRef} className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div className="mb-12 text-center">
+  <ParallaxY from={20} to={-10}>
+    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold
+                   bg-gradient-to-r from-blue-500 via-indigo-400 to-purple-400
+                   bg-clip-text text-transparent">
+      Career Journey
+    </h2>
+  </ParallaxY>
 
-
-{/* ÜST BAŞLIK: ortalı, gradient, responsive */}
-<div className="mb-12 text-center">
-  <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold
-                 bg-gradient-to-r from-blue-500 via-indigo-400 to-purple-400
-                 dark:from-blue-300 dark:via-indigo-200 dark:to-purple-200
-                 bg-clip-text text-transparent">
-    Career Journey
-  </h2>
-
-  <p className="mt-4 max-w-3xl mx-auto leading-relaxed
-                text-base sm:text-lg lg:text-xl
-                text-gray-700 dark:text-gray-300">
-    Follow my path from computer engineering student to AI-focused software engineer
-  </p>
+  <ParallaxY from={12} to={-6} className="mt-4">
+    <p className="max-w-3xl mx-auto text-base sm:text-lg lg:text-xl text-gray-300">
+      Follow my path from computer engineering student to AI-focused software engineer
+    </p>
+  </ParallaxY>
 </div>
 
-        {/* Wrapper: line-x sadece sm+ için; mobile'da çizgi/loop yok */}
+        {/* Wrapper: line-x sadece sm+; mobile çizgi/loop yok */}
         <div className="relative sm:[--line-x:3.5rem]">
-          {/* Tek parça, animasyonlu gradient çizgi (sadece sm+) */}
+          {/* Scroll-grow line (sm+) */}
           <motion.div
-            className="pointer-events-none absolute top-0 bottom-0 left-[var(--line-x)] hidden w-[2px] -translate-x-1/2 rounded-full sm:block"
-            style={{
-              background:
-                "linear-gradient(180deg,#3b82f6,#a855f7,#ec4899,#3b82f6)",
-              backgroundSize: "100% 300%",
-            }}
-            animate={{ backgroundPositionY: ["0%", "100%", "0%"] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          />
+  className="pointer-events-none absolute top-0 bottom-0 left-[var(--line-x)]
+             hidden w-[2px] -translate-x-1/2 rounded-full sm:block"
+  style={{
+    background: "linear-gradient(180deg,#3b82f6,#a855f7,#ec4899,#3b82f6)",
+    backgroundSize: "100% 300%",
+  }}
+  animate={{ backgroundPositionY: ["0%", "100%", "0%"] }}
+  transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+/>
 
-          {/* Liste: mobile'da padding yok; sm+ çizgi için boşluk bırak */}
+          {/* Liste */}
           <ul className="space-y-8 pl-0 sm:pl-[calc(var(--line-x)+2rem)]">
-            {items.map((exp) => {
+            {items.map((exp, idx) => {
               const isOpen = openId === exp.id;
               return (
-                <li
+                <motion.li
                   key={exp.id}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.35, margin: "0px 0px -40px 0px" }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: idx * 0.08 }}
                   className="relative cursor-pointer rounded-2xl border border-white/10 bg-white/[0.03] p-3 sm:p-4 backdrop-blur-[2px] transition-colors hover:bg-white/[0.06]"
                   onClick={() => setOpenId(isOpen ? null : exp.id)}
                 >
-                  {/* NODE: yalnızca sm+ görünür */}
-                  <div className="pointer-events-none absolute left-[-2rem] top-1/2 hidden -translate-y-1/2 sm:block sm:-ml-3 z-10">
+                  {/* Node (sm+), kart görünürken scale+fade */}
+                  <motion.div
+                    className="pointer-events-none absolute left-[-2rem] top-1/2 hidden -translate-y-1/2 sm:block sm:-ml-3 z-10"
+                    initial={{ opacity: 0, scale: 0.7 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 0.45, ease: "easeOut", delay: 0.05 + idx * 0.08 }}
+                  >
                     <LoopNode />
-                  </div>
+                  </motion.div>
 
                   {/* Kart içerik */}
                   <div className="flex items-start">
@@ -188,6 +240,8 @@ export const ExperiencePath: React.FC<{
                           ))}
                         </div>
                       )}
+
+                      {/* Accordion content */}
                       <motion.div
                         initial={false}
                         animate={{
@@ -215,7 +269,7 @@ export const ExperiencePath: React.FC<{
                       <ChevronDown size={18} />
                     </motion.div>
                   </div>
-                </li>
+                </motion.li>
               );
             })}
           </ul>
