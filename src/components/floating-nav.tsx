@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Home, User, Briefcase, FolderOpen, BookOpen, Mail, Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { id: "hero", label: "Home", icon: Home },
@@ -13,14 +14,11 @@ const navItems = [
   { id: "contact", label: "Contact", icon: Mail },
 ];
 
-const externalNavItems = [
-  { href: "/blog", label: "Blog", icon: BookOpen },
-];
-
 export default function FloatingNav() {
   const [activeSection, setActiveSection] = useState("hero");
   const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   // Show nav after scrolling down a bit
   useEffect(() => {
@@ -32,8 +30,10 @@ export default function FloatingNav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Track active section
+  // Track active section only on homepage
   useEffect(() => {
+    if (pathname !== "/") return;
+
     const handleScroll = () => {
       const sections = navItems.map(item => document.getElementById(item.id));
       const scrollPosition = window.scrollY + 200;
@@ -49,7 +49,38 @@ export default function FloatingNav() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
+
+  // Set active section based on current page
+  useEffect(() => {
+    if (pathname.startsWith("/blog")) {
+      setActiveSection("blog");
+    } else if (pathname === "/") {
+      // Will be handled by scroll listener
+    } else {
+      setActiveSection("");
+    }
+  }, [pathname]);
+
+  const handleNavClick = (itemId: string) => {
+    if (itemId === "blog") {
+      // If we're on homepage, scroll to blog section
+      if (pathname === "/") {
+        smoothScrollTo(itemId);
+      } else {
+        // If we're on another page, go to blog page
+        window.location.href = "/blog";
+      }
+    } else {
+      // For other sections, go to homepage first if needed, then scroll
+      if (pathname !== "/") {
+        window.location.href = `/#${itemId}`;
+      } else {
+        smoothScrollTo(itemId);
+      }
+    }
+    setIsMobileMenuOpen(false);
+  };
 
   const smoothScrollTo = (targetId: string) => {
     const element = document.getElementById(targetId);
@@ -76,7 +107,6 @@ export default function FloatingNav() {
     };
 
     requestAnimationFrame(tick);
-    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -97,7 +127,7 @@ export default function FloatingNav() {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => smoothScrollTo(item.id)}
+                    onClick={() => handleNavClick(item.id)}
                     className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
                       isActive
                         ? "text-white"
@@ -116,18 +146,17 @@ export default function FloatingNav() {
                   </button>
                 );
               })}
-            
-            {/* External navigation items */}
-            {externalNavItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-all duration-300"
-              >
-                <item.icon className="relative z-10 h-4 w-4" />
-                <span className="relative z-10">{item.label}</span>
-              </a>
-            ))}
+              
+              {/* Dedicated Blog Page Link - Only show when NOT on blog pages */}
+              {!pathname.startsWith("/blog") && (
+                <a
+                  href="/blog"
+                  className="group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-all duration-300"
+                >
+                  <BookOpen className="relative z-10 h-4 w-4" />
+                  <span className="relative z-10">All Posts</span>
+                </a>
+              )}
             </div>
           </motion.nav>
         )}
@@ -169,7 +198,7 @@ export default function FloatingNav() {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => smoothScrollTo(item.id)}
+                    onClick={() => handleNavClick(item.id)}
                     className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 ${
                       isActive
                         ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
@@ -182,17 +211,16 @@ export default function FloatingNav() {
                 );
               })}
               
-              {/* External navigation items for mobile */}
-              {externalNavItems.map((item) => (
+              {/* Mobile Blog Page Link */}
+              {!pathname.startsWith("/blog") && (
                 <a
-                  key={item.href}
-                  href={item.href}
+                  href="/blog"
                   className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
                 >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.label}</span>
+                  <BookOpen className="h-5 w-5" />
+                  <span>All Posts</span>
                 </a>
-              ))}
+              )}
             </div>
           </motion.div>
         )}
