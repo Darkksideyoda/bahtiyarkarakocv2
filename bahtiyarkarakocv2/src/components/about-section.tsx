@@ -2,79 +2,131 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Code, Database, Globe, Smartphone, Brain, Zap } from "lucide-react";
+import { Brain, Zap, Code as CodeIcon, Smartphone } from "lucide-react";
 import { ParallaxY, Reveal } from "@/components/motion/reveal";
+import {
+  SiReact,
+  SiTypescript,
+  SiNextdotjs,
+  SiTailwindcss,
+  SiJavascript,
+  SiNodedotjs,
+  SiPython,
+  SiPostgresql,
+  SiGit,
+  SiDocker,
+  SiThreedotjs,
+  SiFramer,
+  SiHtml5,
+  SiCss3,
+  SiMongodb,
+  SiExpress,
+  SiFastapi,
+  SiRedis,
+  SiAmazonaws,
+  SiVercel,
+  SiVite,
+  SiWebpack,
+  SiEslint,
+  SiPrettier,
+} from "react-icons/si";
 
-const skills = [
+const skillCategories = [
   {
-    category: "Frontend",
-    icon: Globe,
+    category: "Frontend Development",
+    color: "from-blue-500 to-cyan-500",
     technologies: [
-      { name: "React", level: 90 },
-      { name: "TypeScript", level: 85 },
-      { name: "Next.js", level: 80 },
-      { name: "Tailwind CSS", level: 85 },
-      { name: "JavaScript", level: 90 },
+      { name: "React", icon: SiReact, color: "#61DAFB" },
+      { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
+      { name: "Next.js", icon: SiNextdotjs, color: "#000000" },
+      { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E" },
+      { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4" },
+      { name: "HTML5", icon: SiHtml5, color: "#E34F26" },
+      { name: "CSS3", icon: SiCss3, color: "#1572B6" },
+      { name: "Framer Motion", icon: SiFramer, color: "#0055FF" },
     ],
   },
   {
-    category: "Backend",
-    icon: Database,
+    category: "Backend & Database",
+    color: "from-green-500 to-emerald-500",
     technologies: [
-      { name: "Node.js", level: 80 },
-      { name: "Python", level: 75 },
-      { name: "PostgreSQL", level: 70 },
-      { name: "REST APIs", level: 85 },
-      { name: "WebSocket", level: 75 },
+      { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
+      { name: "Python", icon: SiPython, color: "#3776AB" },
+      { name: "Express.js", icon: SiExpress, color: "#000000" },
+      { name: "FastAPI", icon: SiFastapi, color: "#009688" },
+      { name: "PostgreSQL", icon: SiPostgresql, color: "#336791" },
+      { name: "MongoDB", icon: SiMongodb, color: "#47A248" },
+      { name: "Redis", icon: SiRedis, color: "#DC382D" },
     ],
   },
   {
-    category: "Tools & Others",
-    icon: Code,
+    category: "Tools & Technologies",
+    color: "from-purple-500 to-pink-500",
     technologies: [
-      { name: "Git", level: 85 },
-      { name: "Docker", level: 65 },
-      { name: "Three.js", level: 70 },
-      { name: "Framer Motion", level: 80 },
-      { name: "Algorithm Design", level: 75 },
+      { name: "Git", icon: SiGit, color: "#F05032" },
+      { name: "Docker", icon: SiDocker, color: "#2496ED" },
+      { name: "AWS", icon: SiAmazonaws, color: "#FF9900" },
+      { name: "Vercel", icon: SiVercel, color: "#000000" },
+      { name: "Vite", icon: SiVite, color: "#646CFF" },
+      { name: "Webpack", icon: SiWebpack, color: "#8DD6F9" },
+      { name: "ESLint", icon: SiEslint, color: "#4B32C3" },
+      { name: "Prettier", icon: SiPrettier, color: "#F7B93E" },
+    ],
+  },
+  {
+    category: "Design & Development",
+    color: "from-orange-500 to-red-500",
+    technologies: [
+      { name: "Three.js", icon: SiThreedotjs, color: "#000000" },
+      { name: "Figma", icon: SiFigma, color: "#F24E1E" },
+      { name: "VS Code", icon: SiVisualstudiocode, color: "#007ACC" },
     ],
   },
 ];
 
-const SkillBar: React.FC<{ skill: { name: string; level: number }; index: number }> = ({
-  skill,
+const TechChip: React.FC<{
+  tech: { name: string; icon: any; color: string };
   index,
-}) => {
+}> = ({ tech, index }) => {
+  const IconComponent = tech.icon;
+
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, scale: 0.8 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.5 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="mb-4"
+      transition={{ 
+        duration: 0.4, 
+        delay: index * 0.05,
+        type: "spring",
+        stiffness: 100
+      }}
+      whileHover={{ scale: 1.05, y: -2 }}
+      className="group relative"
     >
-      <div className="mb-2 flex justify-between text-sm">
-        <span className="text-white/90">{skill.name}</span>
-        <span className="text-white/60">{skill.level}%</span>
-      </div>
-      <div className="h-2 overflow-hidden rounded-full bg-white/10">
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${skill.level}%` }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 1, delay: index * 0.1 + 0.2, ease: "easeOut" }}
-          className="h-full rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+      {/* Glow effect on hover */}
+      <div 
+        className="absolute inset-0 rounded-xl opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-30"
+        style={{ backgroundColor: tech.color }}
+      />
+      
+      <div className="relative flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur-sm transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/[0.06]">
+        <IconComponent 
+          className="h-5 w-5 transition-colors duration-300" 
+          style={{ color: tech.color }}
         />
+        <span className="text-sm font-medium text-white/90 group-hover:text-white">
+          {tech.name}
+        </span>
       </div>
     </motion.div>
   );
 };
 
 const SkillCategory: React.FC<{
-  category: typeof skills[0];
+  category: typeof skillCategories[0];
   index: number;
 }> = ({ category, index }) => {
-  const Icon = category.icon;
 
   return (
     <motion.div
@@ -82,18 +134,22 @@ const SkillCategory: React.FC<{
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.6, delay: index * 0.2 }}
-      className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm"
+      className="space-y-6"
     >
-      <div className="mb-6 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20">
-          <Icon className="h-5 w-5 text-blue-400" />
-        </div>
-        <h3 className="text-xl font-semibold text-white">{category.category}</h3>
+      {/* Category Header */}
+      <div className="flex items-center gap-3">
+        <div 
+          className={`h-1 w-12 rounded-full bg-gradient-to-r ${category.color}`}
+        />
+        <h3 className="text-lg font-semibold text-white">
+          {category.category}
+        </h3>
       </div>
       
-      <div className="space-y-4">
-        {category.technologies.map((skill, skillIndex) => (
-          <SkillBar key={skill.name} skill={skill} index={skillIndex} />
+      {/* Technology Chips */}
+      <div className="flex flex-wrap gap-3">
+        {category.technologies.map((tech, techIndex) => (
+          <TechChip key={tech.name} tech={tech} index={techIndex} />
         ))}
       </div>
     </motion.div>
@@ -153,7 +209,7 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
                 {[
                   { icon: Brain, text: "Problem-solving mindset" },
                   { icon: Zap, text: "Fast learner & adapter" },
-                  { icon: Code, text: "Clean, maintainable code" },
+                  { icon: CodeIcon, text: "Clean, maintainable code" },
                   { icon: Smartphone, text: "User-focused design" },
                 ].map((item, index) => (
                   <motion.div
@@ -175,11 +231,11 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
           {/* Skills */}
           <div className="space-y-6">
             <Reveal>
-              <h3 className="text-2xl font-bold text-white mb-6">Technical Skills</h3>
+              <h3 className="text-2xl font-bold text-white mb-8">Technical Skills</h3>
             </Reveal>
             
-            <div className="space-y-6">
-              {skills.map((category, index) => (
+            <div className="space-y-8">
+              {skillCategories.map((category, index) => (
                 <SkillCategory key={category.category} category={category} index={index} />
               ))}
             </div>
