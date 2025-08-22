@@ -29,9 +29,9 @@ import {
   SiWebpack,
   SiEslint,
   SiPrettier,
-  SiFigma,
-  SiVisualstudiocode,
 } from "react-icons/si";
+import { FaFigma } from "react-icons/fa";
+import { VscCode } from "react-icons/vsc";
 
 const skillCategories = [
   {
@@ -80,8 +80,8 @@ const skillCategories = [
     color: "from-orange-500 to-red-500",
     technologies: [
       { name: "Three.js", icon: SiThreedotjs, color: "#000000" },
-      { name: "Figma", icon: SiFigma, color: "#F24E1E" },
-      { name: "VS Code", icon: SiVisualstudiocode, color: "#007ACC" },
+      { name: "Figma", icon: FaFigma, color: "#F24E1E" },
+      { name: "VS Code", icon: VscCode, color: "#007ACC" },
     ],
   },
 ];
