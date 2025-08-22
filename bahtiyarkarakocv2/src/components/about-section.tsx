@@ -113,10 +113,12 @@ const TechChip: React.FC<{
       />
       
       <div className="relative flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur-sm transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/[0.06]">
-        <IconComponent 
-          className="h-5 w-5 transition-colors duration-300" 
-          style={{ color: tech.color }}
-        />
+        {IconComponent && (
+          <IconComponent 
+            className="h-5 w-5 transition-colors duration-300" 
+            style={{ color: tech.color }}
+          />
+        )}
         <span className="text-sm font-medium text-white/90 group-hover:text-white">
           {tech.name}
         </span>
