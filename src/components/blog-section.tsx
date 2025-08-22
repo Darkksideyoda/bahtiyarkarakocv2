@@ -206,7 +206,6 @@ const SearchBar: React.FC<{
   );
 };
 
-export const BlogSection: React.FC<{ id?: string }> = ({ id = "blog" }) => {
 export const BlogSection: React.FC<{ id?: string; showAll?: boolean }> = ({ 
   id = "blog", 
   showAll = false 
@@ -382,12 +381,6 @@ export const BlogSection: React.FC<{ id?: string; showAll?: boolean }> = ({
             </div>
           </Reveal>
         )}
-      </div>
-    </section>
-  );
-};
-          </div>
-        </Reveal>
       </div>
     </section>
   );
