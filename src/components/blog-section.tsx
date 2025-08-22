@@ -1,266 +1,304 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Home, User, Briefcase, FolderOpen, BookOpen, Mail, Menu, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { Calendar, Clock, User, Search, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
-const navItems = [
-  { id: "hero", label: "Home", icon: Home },
-  { id: "about", label: "About", icon: User },
-  { id: "experience", label: "Experience", icon: Briefcase },
-  { id: "projects", label: "Projects", icon: FolderOpen },
-  { id: "blog", label: "Blog", icon: BookOpen },
-  { id: "contact", label: "Contact", icon: Mail },
+// Mock blog data - replace with your actual data source
+const blogPosts = [
+  {
+    id: 1,
+    slug: "real-time-indoor-mapping",
+    title: "Building Real-Time Indoor Mapping Systems with React and WebSockets",
+    excerpt: "Learn how I developed an interactive indoor mapping solution with real-time person tracking using radar sensors and digital twin visualization.",
+    content: "Full blog post content here...",
+    author: "Bahtiyar Karakoç",
+    date: "2024-01-15",
+    readTime: "8 min read",
+    category: "Web Development",
+    tags: ["React", "WebSocket", "Three.js", "Real-time", "Indoor Mapping"],
+    image: "https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    featured: true
+  },
+  {
+    id: 2,
+    slug: "ai-healthcare-solutions",
+    title: "AI-Powered Healthcare Solutions: From Concept to Production",
+    excerpt: "Exploring the development of machine learning models for medical diagnosis and patient care optimization in modern healthcare systems.",
+    content: "Full blog post content here...",
+    author: "Bahtiyar Karakoç",
+    date: "2024-01-10",
+    readTime: "12 min read",
+    category: "Artificial Intelligence",
+    tags: ["AI", "Healthcare", "Machine Learning", "Python", "TensorFlow"],
+    image: "https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    featured: true
+  },
+  {
+    id: 3,
+    slug: "microservices-architecture",
+    title: "Scaling Applications with Microservices Architecture",
+    excerpt: "A comprehensive guide to designing and implementing microservices architecture for large-scale applications using Docker and Kubernetes.",
+    content: "Full blog post content here...",
+    author: "Bahtiyar Karakoç",
+    date: "2024-01-05",
+    readTime: "15 min read",
+    category: "Backend Development",
+    tags: ["Microservices", "Docker", "Kubernetes", "Node.js", "Architecture"],
+    image: "https://images.pexels.com/photos/8386422/pexels-photo-8386422.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    featured: false
+  },
+  {
+    id: 4,
+    slug: "modern-web-performance",
+    title: "Optimizing Modern Web Applications for Peak Performance",
+    excerpt: "Best practices and techniques for improving web application performance, including code splitting, lazy loading, and caching strategies.",
+    content: "Full blog post content here...",
+    author: "Bahtiyar Karakoç",
+    date: "2023-12-28",
+    readTime: "10 min read",
+    category: "Web Development",
+    tags: ["Performance", "React", "Next.js", "Optimization", "Web Vitals"],
+    image: "https://images.pexels.com/photos/8386425/pexels-photo-8386425.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    featured: false
+  }
 ];
 
-export default function FloatingNav() {
-  const [activeSection, setActiveSection] = useState("hero");
-  const [isVisible, setIsVisible] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
+const categories = [
+  "All Posts",
+  "Web Development",
+  "Backend Development", 
+  "Artificial Intelligence",
+  "Healthcare Technology"
+];
 
-  // Show nav after scrolling down a bit
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsVisible(window.scrollY > 100);
-    };
+interface BlogCardProps {
+  post: typeof blogPosts[0];
+  featured?: boolean;
+}
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+const BlogCard: React.FC<BlogCardProps> = ({ post, featured = false }) => {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-500 ${
+        featured ? "md:col-span-2 md:row-span-2" : ""
+      }`}
+    >
+      <div className="relative h-48 md:h-56 overflow-hidden">
+        <img
+          src={post.image}
+          alt={post.title}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
+        
+        {post.featured && (
+          <div className="absolute top-4 right-4">
+            <span className="px-3 py-1 text-xs font-medium bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full">
+              Featured
+            </span>
+          </div>
+        )}
+        
+        <div className="absolute top-4 left-4">
+          <span className="px-3 py-1 text-xs font-medium bg-black/50 text-white rounded-full backdrop-blur-sm">
+            {post.category}
+          </span>
+        </div>
+      </div>
 
-  // Track active section only on homepage
-  useEffect(() => {
-    if (pathname !== "/") return;
+      <div className="p-6">
+        <div className="flex items-center gap-4 text-sm text-gray-400 mb-3">
+          <div className="flex items-center gap-1">
+            <Calendar className="h-4 w-4" />
+            <span>{new Date(post.date).toLocaleDateString()}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4" />
+            <span>{post.readTime}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <User className="h-4 w-4" />
+            <span>{post.author}</span>
+          </div>
+        </div>
 
-    const handleScroll = () => {
-      const sections = navItems.map(item => document.getElementById(item.id));
-      const scrollPosition = window.scrollY + 200;
+        <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300 line-clamp-2">
+          {post.title}
+        </h3>
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        if (section && section.offsetTop <= scrollPosition) {
-          setActiveSection(navItems[i].id);
-          break;
-        }
-      }
-    };
+        <p className="text-gray-300 mb-4 line-clamp-3">
+          {post.excerpt}
+        </p>
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [pathname]);
+        <div className="flex flex-wrap gap-2 mb-4">
+          {post.tags.slice(0, 3).map((tag) => (
+            <span
+              key={tag}
+              className="px-2 py-1 text-xs bg-white/10 text-gray-300 rounded-md"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
 
-  // Set active section based on current page
-  useEffect(() => {
-    if (pathname.startsWith("/blog")) {
-      setActiveSection("blog");
-    } else if (pathname.startsWith("/projects")) {
-      setActiveSection("projects");
-    } else if (pathname === "/") {
-      // Will be handled by scroll listener
-    } else {
-      setActiveSection("");
-    }
-  }, [pathname]);
+        <Link
+          href={`/blog/${post.slug}`}
+          className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors duration-300 font-medium"
+        >
+          Read More
+          <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+        </Link>
+      </div>
+    </motion.article>
+  );
+};
 
-  const handleNavClick = (itemId: string) => {
-    if (itemId === "blog") {
-      // If we're on homepage, scroll to blog section
-      if (pathname === "/") {
-        smoothScrollTo(itemId);
-      } else {
-        // If we're on another page, go to blog page
-        window.location.href = "/blog";
-      }
-    } else {
-      // For other sections, go to homepage first if needed, then scroll
-      if (pathname !== "/") {
-        window.location.href = `/#${itemId}`;
-      } else {
-        smoothScrollTo(itemId);
-      }
-    }
-    setIsMobileMenuOpen(false);
-  };
+interface BlogSectionProps {
+  id?: string;
+  showAll?: boolean;
+}
 
-  const smoothScrollTo = (targetId: string) => {
-    const element = document.getElementById(targetId);
-    if (!element) return;
+export const BlogSection: React.FC<BlogSectionProps> = ({ id, showAll = false }) => {
+  const [selectedCategory, setSelectedCategory] = useState("All Posts");
+  const [searchTerm, setSearchTerm] = useState("");
 
-    const start = window.scrollY;
-    const target = targetId === "hero" ? 0 : element.offsetTop - 80;
-    const duration = 800;
-    const startTime = performance.now();
+  const filteredPosts = blogPosts.filter(post => {
+    const matchesCategory = selectedCategory === "All Posts" || post.category === selectedCategory;
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
 
-    const ease = (t: number) =>
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-    const tick = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const value = start + (target - start) * ease(progress);
-      
-      window.scrollTo(0, value);
-      
-      if (progress < 1) {
-        requestAnimationFrame(tick);
-      }
-    };
-
-    requestAnimationFrame(tick);
-  };
+  const displayPosts = showAll ? filteredPosts : filteredPosts.slice(0, 3);
+  const featuredPosts = displayPosts.filter(post => post.featured);
+  const regularPosts = displayPosts.filter(post => !post.featured);
 
   return (
-    <>
-      {/* Desktop Navigation */}
-      <AnimatePresence>
-        {isVisible && (
-          <motion.nav
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed top-6 left-1/2 z-50 hidden -translate-x-1/2 transform md:block"
-          >
-            <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 py-2 backdrop-blur-md">
-              {navItems.map((item) => {
-                const isActive = activeSection === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavClick(item.id)}
-                    className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
-                      isActive
-                        ? "text-white"
-                        : "text-white/70 hover:text-white"
-                    }`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeBackground"
-                        className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-purple-600"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                    <item.icon className="relative z-10 h-4 w-4" />
-                    <span className="relative z-10">{item.label}</span>
-                  </button>
-                );
-              })}
-              
-              {/* Dedicated Pages Links - Only show when NOT on those pages */}
-              {!pathname.startsWith("/blog") && pathname !== "/" && (
-                <a
-                  href="/blog"
-                  className="group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-all duration-300"
-                >
-                  <BookOpen className="relative z-10 h-4 w-4" />
-                  <span className="relative z-10">Blog</span>
-                </a>
-              )}
-              
-              {!pathname.startsWith("/projects") && pathname !== "/" && (
-                <a
-                  href="/projects"
-                  className="group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-all duration-300"
-                >
-                  <FolderOpen className="relative z-10 h-4 w-4" />
-                  <span className="relative z-10">Projects</span>
-                </a>
-              )}
-            </div>
-          </motion.nav>
-        )}
-      </AnimatePresence>
+    <section id={id} className="py-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent mb-6">
+            {showAll ? "Blog & Insights" : "Latest Blog Posts"}
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            {showAll 
+              ? "Thoughts on technology, development practices, and lessons learned from real-world projects"
+              : "Insights and experiences from my journey in software development"
+            }
+          </p>
+        </motion.div>
 
-      {/* Mobile Navigation Button */}
-      <AnimatePresence>
-        {isVisible && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.3 }}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-black/20 backdrop-blur-md transition-all duration-300 hover:scale-105 md:hidden"
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6 text-white" />
-            ) : (
-              <Menu className="h-6 w-6 text-white" />
-            )}
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      {/* Mobile Navigation Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
+        {showAll && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed bottom-24 right-6 z-40 md:hidden"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-12"
           >
-            <div className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur-md">
-              {navItems.map((item) => {
-                const isActive = activeSection === item.id;
+            {/* Search Bar */}
+            <div className="relative max-w-md mx-auto mb-8">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search blog posts..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors duration-300"
+              />
+            </div>
+
+            {/* Category Filters */}
+            <div className="flex flex-wrap justify-center gap-3">
+              {categories.map((category) => {
+                const count = category === "All Posts" 
+                  ? blogPosts.length 
+                  : blogPosts.filter(post => post.category === category).length;
+                
                 return (
                   <button
-                    key={item.id}
-                    onClick={() => handleNavClick(item.id)}
-                    className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 ${
-                      isActive
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      selectedCategory === category
                         ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                        : "bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-white/10"
                     }`}
                   >
-                    <item.icon className="h-5 w-5" />
-                    <span>{item.label}</span>
+                    {category} ({count})
                   </button>
                 );
               })}
-              
-              {/* Mobile Page Links */}
-              {!pathname.startsWith("/blog") && pathname !== "/" && (
-                <a
-                  href="/blog"
-                  className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
-                >
-                  <BookOpen className="h-5 w-5" />
-                  <span>Blog</span>
-                </a>
-              )}
-              
-              {!pathname.startsWith("/projects") && pathname !== "/" && (
-                <a
-                  href="/projects"
-                  className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
-                >
-                  <FolderOpen className="h-5 w-5" />
-                  <span>Projects</span>
-                </a>
-              )}
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
 
-      {/* Mobile Menu Backdrop */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
+        {showAll && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mb-12"
+          >
+            <h3 className="text-2xl font-bold text-white mb-6">Featured Posts</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredPosts.map((post) => (
+                <BlogCard key={post.id} post={post} featured />
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: showAll ? 0.4 : 0.3 }}
+        >
+          {showAll && <h3 className="text-2xl font-bold text-white mb-6">All Posts</h3>}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {(showAll ? regularPosts : displayPosts).map((post) => (
+              <BlogCard key={post.id} post={post} />
+            ))}
+          </div>
+        </motion.div>
+
+        {!showAll && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-center mt-12"
+          >
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"
+            >
+              View All Blog Posts
+              <ChevronRight className="h-5 w-5" />
+            </Link>
+          </motion.div>
+        )}
+
+        {showAll && filteredPosts.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm md:hidden"
-          />
+            className="text-center py-12"
+          >
+            <p className="text-gray-400 text-lg">No posts found matching your criteria.</p>
+          </motion.div>
         )}
-      </AnimatePresence>
-    </>
+      </div>
+    </section>
   );
-}
+};
