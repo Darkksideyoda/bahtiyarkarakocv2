@@ -13,6 +13,10 @@ const navItems = [
   { id: "contact", label: "Contact", icon: Mail },
 ];
 
+const externalNavItems = [
+  { href: "/blog", label: "Blog", icon: BookOpen },
+];
+
 export default function FloatingNav() {
   const [activeSection, setActiveSection] = useState("hero");
   const [isVisible, setIsVisible] = useState(false);
@@ -112,6 +116,18 @@ export default function FloatingNav() {
                   </button>
                 );
               })}
+            
+            {/* External navigation items */}
+            {externalNavItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-all duration-300"
+              >
+                <item.icon className="relative z-10 h-4 w-4" />
+                <span className="relative z-10">{item.label}</span>
+              </a>
+            ))}
             </div>
           </motion.nav>
         )}
@@ -165,6 +181,18 @@ export default function FloatingNav() {
                   </button>
                 );
               })}
+              
+              {/* External navigation items for mobile */}
+              {externalNavItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span>{item.label}</span>
+                </a>
+              ))}
             </div>
           </motion.div>
         )}
