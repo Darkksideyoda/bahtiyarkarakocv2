@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ParallaxY, Reveal } from "@/components/motion/reveal";
 import { blogPosts, blogCategories } from "@/data/blog-posts";
 import { BlogPost } from "@/types/blog";
+import Link from "next/link";
 
 const BlogCard: React.FC<{
   post: BlogPost;
@@ -115,14 +116,30 @@ const BlogCard: React.FC<{
 
         {/* Read more button */}
         <div className="pt-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="group/btn h-auto p-0 text-blue-400 hover:bg-transparent hover:text-blue-300"
-          >
-            Read More
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              variant="outline"
+              size="lg"
+              asChild
+              className="rounded-full border-2 border-white/20 px-8 py-3 text-white/80 backdrop-blur-sm hover:border-blue-400 hover:text-white"
+            >
+              <Link href="/blog">
+                View All Blog Posts
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              asChild
+              className="rounded-full border-2 border-white/20 px-8 py-3 text-white/80 backdrop-blur-sm hover:border-blue-400 hover:text-white"
+            >
+              <a href="https://github.com/Darkksideyoda" target="_blank" rel="noopener noreferrer">
+                View Projects on GitHub
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </a>
+            </Button>
+          </div>
         </div>
       </div>
 
