@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Clock, User, ArrowRight, Search, Filter, Tag } from "lucide-react";
+import { Calendar, Clock, User, ArrowRight, Search, Filter, Tag, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ParallaxY, Reveal } from "@/components/motion/reveal";
 import { blogPosts, blogCategories } from "@/data/blog-posts";
