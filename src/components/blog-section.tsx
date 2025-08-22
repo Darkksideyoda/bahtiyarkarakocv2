@@ -1,389 +1,274 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Calendar, Clock, User, ArrowRight, Search, Filter, Tag, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ParallaxY, Reveal } from "@/components/motion/reveal";
-import { blogPosts, blogCategories } from "@/data/blog-posts";
-import { BlogPost } from "@/types/blog";
-import Link from "next/link";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Home, User, Briefcase, FolderOpen, BookOpen, Mail, Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 
-const BlogCard: React.FC<{
-  post: BlogPost;
-  index: number;
-  featured?: boolean;
-}> = ({ post, index, featured = false }) => {
-  const [isHovered, setIsHovered] = useState(false);
+const navItems = [
+  { id: "hero", label: "Home", icon: Home },
+  { id: "about", label: "About", icon: User },
+  { id: "experience", label: "Experience", icon: Briefcase },
+  { id: "projects", label: "Projects", icon: FolderOpen },
+  { id: "blog", label: "Blog", icon: BookOpen },
+  { id: "contact", label: "Contact", icon: Mail },
+];
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+export default function FloatingNav() {
+  const [activeSection, setActiveSection] = useState("hero");
+  const [isVisible, setIsVisible] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Show nav after scrolling down a bit
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsVisible(window.scrollY > 100);
+    };
+
+      }
+    } else {
+      // For other sections, go to homepage first if needed, then scroll
+      if (pathname !== "/") {
+        window.location.href = `/#${itemId}`;
+      } else {
+        smoothScrollTo(itemId);
+      }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Track active section only on homepage
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const handleScroll = () => {
+      const sections = navItems.map(item => document.getElementById(item.id));
+      const scrollPosition = window.scrollY + 200;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveSection(navItems[i].id);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
+
+  // Set active section based on current page
+  useEffect(() => {
+    if (pathname.startsWith("/blog")) {
+      setActiveSection("blog");
+    } else if (pathname.startsWith("/projects")) {
+      setActiveSection("projects");
+    } else if (pathname === "/") {
+      // Will be handled by scroll listener
+    } else {
+      setActiveSection("");
+    }
+  }, [pathname]);
+
+  const handleNavClick = (itemId: string) => {
+    if (itemId === "blog") {
+      // If we're on homepage, scroll to blog section
+      if (pathname === "/") {
+        smoothScrollTo(itemId);
+      } else {
+        // If we're on another page, go to blog page
+        window.location.href = "/blog";
+      }
+    } else {
+      // For other sections, go to homepage first if needed, then scroll
+      if (pathname !== "/") {
+        window.location.href = `/#${itemId}`;
+      } else {
+        smoothScrollTo(itemId);
+      }
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  const smoothScrollTo = (targetId: string) => {
+    const element = document.getElementById(targetId);
+    if (!element) return;
+
+    const start = window.scrollY;
+    const target = targetId === "hero" ? 0 : element.offsetTop - 80;
+    const duration = 800;
+    const startTime = performance.now();
+
+    const ease = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const value = start + (target - start) * ease(progress);
+      
+      window.scrollTo(0, value);
+      
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      }
+    };
+
+    requestAnimationFrame(tick);
   };
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06] ${
-        featured ? "md:col-span-2 lg:col-span-2" : ""
-      }`}
-    >
-      {/* Featured badge */}
-      {post.featured && (
-        <div className="absolute right-4 top-4 z-10">
-          <span className="rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-1 text-xs font-medium text-white">
-            Featured
-          </span>
-        </div>
-      )}
-
-      {/* Image */}
-      {post.imageUrl && (
-        <div className={`relative overflow-hidden ${featured ? "h-64" : "h-48"}`}>
-          <motion.img
-            src={post.imageUrl}
-            alt={post.title}
-            className="h-full w-full object-cover transition-transform duration-500"
-            animate={{ scale: isHovered ? 1.05 : 1 }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          
-          {/* Category badge on image */}
-          <div className="absolute bottom-4 left-4">
-            <span className="rounded-full border border-white/20 bg-black/40 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
-              {post.category}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Content */}
-      <div className={`p-6 ${featured ? "space-y-4" : "space-y-3"}`}>
-        {/* Meta information */}
-        <div className="flex flex-wrap items-center gap-4 text-xs text-white/60">
-          <div className="flex items-center gap-1">
-            <Calendar className="h-3 w-3" />
-            <span>{formatDate(post.publishedAt)}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            <span>{post.readingTime} min read</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <User className="h-3 w-3" />
-            <span>{post.author.name}</span>
-          </div>
-        </div>
-
-        {/* Title */}
-        <h3 className={`font-semibold text-white group-hover:text-blue-300 transition-colors ${
-          featured ? "text-2xl" : "text-xl"
-        }`}>
-          {post.title}
-        </h3>
-
-        {/* Excerpt */}
-        <p className={`leading-relaxed text-white/70 ${
-          featured ? "text-base" : "text-sm"
-        }`}>
-          {post.excerpt}
-        </p>
-
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2">
-          {post.tags.slice(0, featured ? 5 : 3).map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/80"
-            >
-              {tag}
-            </span>
-          ))}
-          {post.tags.length > (featured ? 5 : 3) && (
-            <span className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/60">
-              +{post.tags.length - (featured ? 5 : 3)} more
-            </span>
-          )}
-        </div>
-
-        {/* Read more button */}
-        <div className="pt-2">
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              variant="outline"
-              size="lg"
-              asChild
-              className="rounded-full border-2 border-white/20 px-8 py-3 text-white/80 backdrop-blur-sm hover:border-blue-400 hover:text-white"
-            >
-              <Link href="/blog">
-                View All Blog Posts
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              asChild
-              className="rounded-full border-2 border-white/20 px-8 py-3 text-white/80 backdrop-blur-sm hover:border-blue-400 hover:text-white"
-            >
-              <a href="https://github.com/Darkksideyoda" target="_blank" rel="noopener noreferrer">
-                View Projects on GitHub
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Hover effect */}
-      <motion.div
-        className="absolute inset-0 rounded-2xl border border-blue-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          background: "linear-gradient(135deg, rgba(59,130,246,0.05), rgba(168,85,247,0.05))"
-        }}
-      />
-    </motion.article>
-  );
-};
-
-const CategoryFilter: React.FC<{
-  categories: typeof blogCategories;
-  activeCategory: string;
-  onCategoryChange: (category: string) => void;
-}> = ({ categories, activeCategory, onCategoryChange }) => {
-  return (
-    <div className="flex flex-wrap gap-3 justify-center">
-      <button
-        onClick={() => onCategoryChange("all")}
-        className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
-          activeCategory === "all"
-            ? "bg-blue-600 text-white shadow-lg"
-            : "border border-white/20 text-white/70 hover:border-white/40 hover:text-white"
-        }`}
-      >
-        All Posts
-      </button>
-      {categories.map((category) => (
-        <button
-          key={category.id}
-          onClick={() => onCategoryChange(category.id)}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
-            activeCategory === category.id
-              ? "bg-blue-600 text-white shadow-lg"
-              : "border border-white/20 text-white/70 hover:border-white/40 hover:text-white"
-          }`}
-        >
-          {category.name} ({category.count})
-        </button>
-      ))}
-    </div>
-  );
-};
-
-const SearchBar: React.FC<{
-  searchTerm: string;
-  onSearchChange: (term: string) => void;
-}> = ({ searchTerm, onSearchChange }) => {
-  return (
-    <div className="relative max-w-md mx-auto">
-      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" />
-      <input
-        type="text"
-        placeholder="Search blog posts..."
-        value={searchTerm}
-        onChange={(e) => onSearchChange(e.target.value)}
-        className="w-full rounded-full border border-white/10 bg-white/[0.03] pl-10 pr-4 py-3 text-white placeholder-white/50 backdrop-blur-sm transition-all duration-300 focus:border-blue-400 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-blue-400/20"
-      />
-    </div>
-  );
-};
-
-export const BlogSection: React.FC<{ id?: string; showAll?: boolean }> = ({ 
-  id = "blog", 
-  showAll = false 
-}) => {
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // Filter posts based on category and search term
-  let filteredPosts = blogPosts.filter((post) => {
-    const matchesCategory = activeCategory === "all" || 
-      post.category.toLowerCase().replace(/\s+/g, "-") === activeCategory;
-    
-    const matchesSearch = searchTerm === "" ||
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    return matchesCategory && matchesSearch;
-  });
-
-  // On homepage, show only featured posts (max 3)
-  if (!showAll) {
-    filteredPosts = filteredPosts.filter(post => post.featured).slice(0, 3);
-  }
-
-  const featuredPosts = filteredPosts.filter(post => post.featured);
-  const regularPosts = filteredPosts.filter(post => !post.featured);
-
-  return (
-    <section id={id} className="relative w-full py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-16 text-center">
-          <ParallaxY from={20} to={-10}>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-blue-500 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
-              Blog & Insights
-            </h2>
-          </ParallaxY>
-          
-          <ParallaxY from={12} to={-6} className="mt-4">
-            <p className="mx-auto max-w-3xl text-base sm:text-lg lg:text-xl text-gray-300">
-              Thoughts on technology, development practices, and lessons learned from real-world projects
-            </p>
-          </ParallaxY>
-        </div>
-
-        {/* Search and Filters */}
-        {showAll && (
-          <div className="mb-12 space-y-8">
-            <Reveal>
-              <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-            </Reveal>
-            
-            <Reveal>
-              <CategoryFilter
-                categories={blogCategories}
-                activeCategory={activeCategory}
-                onCategoryChange={setActiveCategory}
-              />
-            </Reveal>
-          </div>
-        )}
-
-        {/* Featured Posts */}
-        {featuredPosts.length > 0 && showAll && (
-          <div className="mb-16">
-            <Reveal>
-              <h3 className="mb-8 text-2xl font-bold text-white">Featured Posts</h3>
-            </Reveal>
-            <div className="grid gap-8 md:grid-cols-2">
-              {featuredPosts.map((post, index) => (
-                <BlogCard
-                  key={post.id}
-                  post={post}
-                  index={index}
-                  featured
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Regular Posts */}
-        {(regularPosts.length > 0 && showAll) || (!showAll && filteredPosts.length > 0) && (
-          <div className="mb-16">
-            {featuredPosts.length > 0 && showAll && (
-              <Reveal>
-                <h3 className="mb-8 text-2xl font-bold text-white">Latest Posts</h3>
-              </Reveal>
-            )}
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {(showAll ? regularPosts : filteredPosts).map((post, index) => (
-                <BlogCard
-                  key={post.id}
-                  post={post}
-                  index={showAll ? index + featuredPosts.length : index}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* No results */}
-        {filteredPosts.length === 0 && showAll && (
-          <Reveal className="text-center py-16">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-12 backdrop-blur-sm">
-              <Search className="mx-auto mb-4 h-12 w-12 text-white/40" />
-              <h3 className="text-xl font-semibold text-white mb-2">No posts found</h3>
-              <p className="text-white/60 mb-6">
-                Try adjusting your search terms or category filter
-              </p>
-              <Button
-                onClick={() => {
-                  setSearchTerm("");
-                  setActiveCategory("all");
-                }}
-                variant="outline"
-                className="rounded-full border-white/20 text-white/80 hover:border-white/40 hover:text-white"
-              >
-                Clear Filters
-              </Button>
-            </div>
-          </Reveal>
-        )}
-
-        {/* View All Posts Button - only show on homepage */}
-        {!showAll && (
-          <Reveal className="mt-16 text-center">
-            <Button
-              variant="outline"
-              size="lg"
-              asChild
-              className="rounded-full border-2 border-white/20 px-8 py-3 text-white/80 backdrop-blur-sm hover:border-blue-400 hover:text-white"
-            >
-              <Link href="/blog">
-                View All Blog Posts
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </Reveal>
-        )}
-
-        {/* Blog Stats - only show on blog page */}
-        {showAll && (
-          <Reveal className="mt-16">
-            <div className="grid gap-6 grid-cols-2 sm:gap-8 lg:grid-cols-4">
-              {[
-                { number: blogPosts.length.toString(), label: "Blog Posts" },
-                { number: blogCategories.length.toString(), label: "Categories" },
-                { number: Array.from(new Set(blogPosts.flatMap(p => p.tags))).length.toString(), label: "Topics Covered" },
-                { number: Math.round(blogPosts.reduce((acc, post) => acc + post.readingTime, 0) / blogPosts.length).toString() + " min", label: "Avg. Read Time" },
-              ].map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="text-center rounded-lg sm:rounded-xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 backdrop-blur-sm"
-                >
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true, amount: 0.5 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 + 0.2, type: "spring" }}
-                    className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+    <>
+      {/* Desktop Navigation */}
+      <AnimatePresence>
+        {isVisible && (
+          <motion.nav
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-6 left-1/2 z-50 hidden -translate-x-1/2 transform md:block"
+          >
+            <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 py-2 backdrop-blur-md">
+              {navItems.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavClick(item.id)}
+                    className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
+                      isActive
+                        ? "text-white"
+                        : "text-white/70 hover:text-white"
+                    }`}
                   >
-                    {stat.number}
-                  </motion.div>
-                  <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-white/70">{stat.label}</p>
-                </motion.div>
-              ))}
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeBackground"
+                        className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-purple-600"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                    <item.icon className="relative z-10 h-4 w-4" />
+                    <span className="relative z-10">{item.label}</span>
+                  </button>
+                );
+              })}
+              
+              {/* Dedicated Pages Links - Only show when NOT on those pages */}
+              {!pathname.startsWith("/blog") && pathname !== "/" && (
+                <a
+                  href="/blog"
+                  className="group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-all duration-300"
+                >
+                  <BookOpen className="relative z-10 h-4 w-4" />
+                  <span className="relative z-10">Blog</span>
+                </a>
+              )}
+              
+              {!pathname.startsWith("/projects") && pathname !== "/" && (
+                <a
+                  href="/projects"
+                  className="group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-all duration-300"
+                >
+                  <FolderOpen className="relative z-10 h-4 w-4" />
+                  <span className="relative z-10">Projects</span>
+                </a>
+              )}
             </div>
-          </Reveal>
+          </motion.nav>
         )}
-      </div>
-    </section>
-  );
-};
+      </AnimatePresence>
 
-export default BlogSection;
+      {/* Mobile Navigation Button */}
+      <AnimatePresence>
+        {isVisible && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-black/20 backdrop-blur-md transition-all duration-300 hover:scale-105 md:hidden"
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6 text-white" />
+            ) : (
+              <Menu className="h-6 w-6 text-white" />
+            )}
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Navigation Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-24 right-6 z-40 md:hidden"
+          >
+            <div className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur-md">
+              {navItems.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavClick(item.id)}
+                    className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 ${
+                      isActive
+                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+              
+              {/* Mobile Page Links */}
+              {!pathname.startsWith("/blog") && pathname !== "/" && (
+                <a
+                  href="/blog"
+                  className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
+                >
+                  <BookOpen className="h-5 w-5" />
+                  <span>Blog</span>
+                </a>
+              )}
+              
+              {!pathname.startsWith("/projects") && pathname !== "/" && (
+                <a
+                  href="/projects"
+                  className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
+                >
+                  <FolderOpen className="h-5 w-5" />
+                  <span>Projects</span>
+                </a>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Menu Backdrop */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm md:hidden"
+          />
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

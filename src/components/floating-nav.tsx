@@ -26,6 +26,23 @@ export default function FloatingNav() {
       setIsVisible(window.scrollY > 100);
     };
 
+        window.location.href = "/blog";
+      }
+    } else if (itemId === "projects") {
+      // If we're on homepage, scroll to projects section
+      if (pathname === "/") {
+        smoothScrollTo(itemId);
+      } else {
+        // If we're on another page, go to projects page
+        window.location.href = "/projects";
+      }
+    } else {
+      // For other sections, go to homepage first if needed, then scroll
+      if (pathname !== "/") {
+        window.location.href = `/#${itemId}`;
+      } else {
+        smoothScrollTo(itemId);
+      }
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -55,6 +72,8 @@ export default function FloatingNav() {
   useEffect(() => {
     if (pathname.startsWith("/blog")) {
       setActiveSection("blog");
+    } else if (pathname.startsWith("/projects")) {
+      setActiveSection("projects");
     } else if (pathname === "/") {
       // Will be handled by scroll listener
     } else {
@@ -147,14 +166,24 @@ export default function FloatingNav() {
                 );
               })}
               
-              {/* Dedicated Blog Page Link - Only show when NOT on blog pages */}
-              {!pathname.startsWith("/blog") && (
+              {/* Dedicated Pages Links - Only show when NOT on those pages */}
+              {!pathname.startsWith("/blog") && pathname !== "/" && (
                 <a
                   href="/blog"
                   className="group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-all duration-300"
                 >
                   <BookOpen className="relative z-10 h-4 w-4" />
-                  <span className="relative z-10">All Posts</span>
+                  <span className="relative z-10">Blog</span>
+                </a>
+              )}
+              
+              {!pathname.startsWith("/projects") && pathname !== "/" && (
+                <a
+                  href="/projects"
+                  className="group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-all duration-300"
+                >
+                  <FolderOpen className="relative z-10 h-4 w-4" />
+                  <span className="relative z-10">Projects</span>
                 </a>
               )}
             </div>
@@ -211,14 +240,24 @@ export default function FloatingNav() {
                 );
               })}
               
-              {/* Mobile Blog Page Link */}
-              {!pathname.startsWith("/blog") && (
+              {/* Mobile Page Links */}
+              {!pathname.startsWith("/blog") && pathname !== "/" && (
                 <a
                   href="/blog"
                   className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
                 >
                   <BookOpen className="h-5 w-5" />
-                  <span>All Posts</span>
+                  <span>Blog</span>
+                </a>
+              )}
+              
+              {!pathname.startsWith("/projects") && pathname !== "/" && (
+                <a
+                  href="/projects"
+                  className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
+                >
+                  <FolderOpen className="h-5 w-5" />
+                  <span>Projects</span>
                 </a>
               )}
             </div>
