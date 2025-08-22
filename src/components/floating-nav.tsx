@@ -26,23 +26,6 @@ export default function FloatingNav() {
       setIsVisible(window.scrollY > 100);
     };
 
-        window.location.href = "/blog";
-      }
-    } else if (itemId === "projects") {
-      // If we're on homepage, scroll to projects section
-      if (pathname === "/") {
-        smoothScrollTo(itemId);
-      } else {
-        // If we're on another page, go to projects page
-        window.location.href = "/projects";
-      }
-    } else {
-      // For other sections, go to homepage first if needed, then scroll
-      if (pathname !== "/") {
-        window.location.href = `/#${itemId}`;
-      } else {
-        smoothScrollTo(itemId);
-      }
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -89,6 +72,14 @@ export default function FloatingNav() {
       } else {
         // If we're on another page, go to blog page
         window.location.href = "/blog";
+      }
+    } else if (itemId === "projects") {
+      // If we're on homepage, scroll to projects section
+      if (pathname === "/") {
+        smoothScrollTo(itemId);
+      } else {
+        // If we're on another page, go to projects page
+        window.location.href = "/projects";
       }
     } else {
       // For other sections, go to homepage first if needed, then scroll
