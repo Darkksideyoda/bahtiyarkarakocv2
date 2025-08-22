@@ -112,14 +112,14 @@ const TechChip: React.FC<{
         style={{ backgroundColor: tech.color }}
       />
       
-      <div className="relative flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur-sm transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/[0.06]">
+      <div className="relative flex items-center gap-2 sm:gap-3 rounded-lg sm:rounded-xl border border-white/10 bg-white/[0.03] px-2 py-2 sm:px-4 sm:py-3 backdrop-blur-sm transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/[0.06]">
         {IconComponent && (
           <IconComponent 
-            className="h-5 w-5 transition-colors duration-300" 
+            className="h-4 w-4 sm:h-5 sm:w-5 transition-colors duration-300 flex-shrink-0" 
             style={{ color: tech.color }}
           />
         )}
-        <span className="text-sm font-medium text-white/90 group-hover:text-white">
+        <span className="text-xs sm:text-sm font-medium text-white/90 group-hover:text-white truncate">
           {tech.name}
         </span>
       </div>
@@ -145,13 +145,13 @@ const SkillCategory: React.FC<{
         <div 
           className={`h-1 w-12 rounded-full bg-gradient-to-r ${category.color}`}
         />
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="text-base sm:text-lg font-semibold text-white">
           {category.category}
         </h3>
       </div>
       
       {/* Technology Chips */}
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2 sm:gap-3">
         {category.technologies.map((tech, techIndex) => (
           <TechChip key={tech.name} tech={tech} index={techIndex} />
         ))}
@@ -181,7 +181,7 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
 
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Story */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-2 lg:order-1">
             <Reveal>
               <h3 className="text-2xl font-bold text-white mb-6">My Journey</h3>
               <div className="space-y-4 text-white/80 leading-relaxed">
@@ -209,7 +209,7 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
             {/* Highlights */}
             <Reveal className="mt-8">
               <h4 className="text-lg font-semibold text-white mb-4">What I Bring</h4>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
                 {[
                   { icon: Brain, text: "Problem-solving mindset" },
                   { icon: Zap, text: "Fast learner & adapter" },
@@ -224,8 +224,8 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                     className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.02] p-3"
                   >
-                    <item.icon className="h-5 w-5 text-blue-400" />
-                    <span className="text-white/80">{item.text}</span>
+                    <item.icon className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400 flex-shrink-0" />
+                    <span className="text-sm sm:text-base text-white/80">{item.text}</span>
                   </motion.div>
                 ))}
               </div>
@@ -233,12 +233,12 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
           </div>
 
           {/* Skills */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-1 lg:order-2">
             <Reveal>
               <h3 className="text-2xl font-bold text-white mb-8">Technical Skills</h3>
             </Reveal>
             
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               {skillCategories.map((category, index) => (
                 <SkillCategory key={category.category} category={category} index={index} />
               ))}
@@ -248,7 +248,7 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
 
         {/* Stats */}
         <Reveal className="mt-16">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 grid-cols-2 sm:gap-8 lg:grid-cols-4">
             {[
               { number: "2+", label: "Years Experience" },
               { number: "10+", label: "Projects Completed" },
@@ -261,18 +261,18 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="text-center rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm"
+                className="text-center rounded-lg sm:rounded-xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 backdrop-blur-sm"
               >
                 <motion.div
                   initial={{ scale: 0 }}
                   whileInView={{ scale: 1 }}
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.5, delay: index * 0.1 + 0.2, type: "spring" }}
-                  className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+                  className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
                 >
                   {stat.number}
                 </motion.div>
-                <p className="mt-2 text-white/70">{stat.label}</p>
+                <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-white/70">{stat.label}</p>
               </motion.div>
             ))}
           </div>

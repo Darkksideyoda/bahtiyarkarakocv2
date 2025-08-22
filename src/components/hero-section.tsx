@@ -68,6 +68,15 @@ export default function HeroSection() {
           </Button>
 
           <Button
+            onClick={() => smoothScrollTo("contact")}
+            variant="outline"
+            size="lg"
+            className="rounded-full border-2 border-purple-400/50 px-8 py-3 text-purple-300 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-purple-400 hover:bg-purple-400/10"
+          >
+            Get In Touch
+            <ArrowDown className="ml-2 h-4 w-4" />
+          </Button>
+          <Button
             variant="outline"
             size="lg"
             asChild
