@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, User, Briefcase, FolderOpen, Mail, Menu, X } from "lucide-react";
+import { Home, User, Briefcase, FolderOpen, BookOpen, Mail, Menu, X } from "lucide-react";
 
 const navItems = [
   { id: "hero", label: "Home", icon: Home },
   { id: "about", label: "About", icon: User },
   { id: "experience", label: "Experience", icon: Briefcase },
   { id: "projects", label: "Projects", icon: FolderOpen },
+  { id: "blog", label: "Blog", icon: BookOpen },
   { id: "contact", label: "Contact", icon: Mail },
 ];
 
