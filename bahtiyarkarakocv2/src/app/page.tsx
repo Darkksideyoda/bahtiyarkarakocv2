@@ -1,5 +1,6 @@
 import HeroSection from "@/components/hero-section";
 import { ExperiencePath } from "@/components/experience-path";
+import { ProjectsSection } from "@/components/projects-section";
 import SiteBackground from "@/components/site-background";
 
 export default function Home() {
@@ -8,6 +9,7 @@ export default function Home() {
       <SiteBackground /> 
       <HeroSection />
       <ExperiencePath id="experience" />
+      <ProjectsSection id="projects" />
     </main>
   );
 }

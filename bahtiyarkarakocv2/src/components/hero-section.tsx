@@ -59,7 +59,7 @@ export default function HeroSection() {
 
         <div className="mb-16 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button
-            onClick={() => smoothScrollTo("experience")}
+            onClick={() => smoothScrollTo("projects")}
             size="lg"
             className="rounded-full bg-blue-600 px-8 py-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-blue-700"
           >
