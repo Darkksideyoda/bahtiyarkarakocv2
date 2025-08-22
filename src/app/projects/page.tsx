@@ -1,20 +1,20 @@
 import { Metadata } from "next";
-import { BlogSection } from "@/components/blog-section";
+import { ProjectsSection } from "@/components/projects-section";
 import SiteBackground from "@/components/site-background";
 import FloatingNav from "@/components/floating-nav";
 
 export const metadata: Metadata = {
-  title: "Blog - Bahtiyar Karakoç",
-  description: "Thoughts on technology, development practices, and lessons learned from real-world projects",
+  title: "Projects - Bahtiyar Karakoç",
+  description: "A showcase of my recent work in web development, AI, and digital solutions",
 };
 
-export default function BlogPage() {
+export default function ProjectsPage() {
   return (
     <main className="relative">
       <SiteBackground />
       <FloatingNav />
       <div className="pt-20">
-        <BlogSection showAll={true} />
+        <ProjectsSection showAll={true} />
       </div>
     </main>
   );

@@ -207,11 +207,15 @@ const SearchBar: React.FC<{
 };
 
 export const BlogSection: React.FC<{ id?: string }> = ({ id = "blog" }) => {
+export const BlogSection: React.FC<{ id?: string; showAll?: boolean }> = ({ 
+  id = "blog", 
+  showAll = false 
+}) => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
   // Filter posts based on category and search term
-  const filteredPosts = blogPosts.filter((post) => {
+  let filteredPosts = blogPosts.filter((post) => {
     const matchesCategory = activeCategory === "all" || 
       post.category.toLowerCase().replace(/\s+/g, "-") === activeCategory;
     
@@ -222,6 +226,11 @@ export const BlogSection: React.FC<{ id?: string }> = ({ id = "blog" }) => {
 
     return matchesCategory && matchesSearch;
   });
+
+  // On homepage, show only featured posts (max 3)
+  if (!showAll) {
+    filteredPosts = filteredPosts.filter(post => post.featured).slice(0, 3);
+  }
 
   const featuredPosts = filteredPosts.filter(post => post.featured);
   const regularPosts = filteredPosts.filter(post => !post.featured);
@@ -245,22 +254,24 @@ export const BlogSection: React.FC<{ id?: string }> = ({ id = "blog" }) => {
         </div>
 
         {/* Search and Filters */}
-        <div className="mb-12 space-y-8">
-          <Reveal>
-            <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-          </Reveal>
-          
-          <Reveal>
-            <CategoryFilter
-              categories={blogCategories}
-              activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
-            />
-          </Reveal>
-        </div>
+        {showAll && (
+          <div className="mb-12 space-y-8">
+            <Reveal>
+              <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+            </Reveal>
+            
+            <Reveal>
+              <CategoryFilter
+                categories={blogCategories}
+                activeCategory={activeCategory}
+                onCategoryChange={setActiveCategory}
+              />
+            </Reveal>
+          </div>
+        )}
 
         {/* Featured Posts */}
-        {featuredPosts.length > 0 && (
+        {featuredPosts.length > 0 && showAll && (
           <div className="mb-16">
             <Reveal>
               <h3 className="mb-8 text-2xl font-bold text-white">Featured Posts</h3>
@@ -279,19 +290,19 @@ export const BlogSection: React.FC<{ id?: string }> = ({ id = "blog" }) => {
         )}
 
         {/* Regular Posts */}
-        {regularPosts.length > 0 && (
+        {(regularPosts.length > 0 && showAll) || (!showAll && filteredPosts.length > 0) && (
           <div className="mb-16">
-            {featuredPosts.length > 0 && (
+            {featuredPosts.length > 0 && showAll && (
               <Reveal>
                 <h3 className="mb-8 text-2xl font-bold text-white">Latest Posts</h3>
               </Reveal>
             )}
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {regularPosts.map((post, index) => (
+              {(showAll ? regularPosts : filteredPosts).map((post, index) => (
                 <BlogCard
                   key={post.id}
                   post={post}
-                  index={index + featuredPosts.length}
+                  index={showAll ? index + featuredPosts.length : index}
                 />
               ))}
             </div>
@@ -299,7 +310,7 @@ export const BlogSection: React.FC<{ id?: string }> = ({ id = "blog" }) => {
         )}
 
         {/* No results */}
-        {filteredPosts.length === 0 && (
+        {filteredPosts.length === 0 && showAll && (
           <Reveal className="text-center py-16">
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-12 backdrop-blur-sm">
               <Search className="mx-auto mb-4 h-12 w-12 text-white/40" />
@@ -321,35 +332,60 @@ export const BlogSection: React.FC<{ id?: string }> = ({ id = "blog" }) => {
           </Reveal>
         )}
 
-        {/* Blog Stats */}
-        <Reveal className="mt-16">
-          <div className="grid gap-6 grid-cols-2 sm:gap-8 lg:grid-cols-4">
-            {[
-              { number: blogPosts.length.toString(), label: "Blog Posts" },
-              { number: blogCategories.length.toString(), label: "Categories" },
-              { number: Array.from(new Set(blogPosts.flatMap(p => p.tags))).length.toString(), label: "Topics Covered" },
-              { number: Math.round(blogPosts.reduce((acc, post) => acc + post.readingTime, 0) / blogPosts.length).toString() + " min", label: "Avg. Read Time" },
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="text-center rounded-lg sm:rounded-xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 backdrop-blur-sm"
-              >
+        {/* View All Posts Button - only show on homepage */}
+        {!showAll && (
+          <Reveal className="mt-16 text-center">
+            <Button
+              variant="outline"
+              size="lg"
+              asChild
+              className="rounded-full border-2 border-white/20 px-8 py-3 text-white/80 backdrop-blur-sm hover:border-blue-400 hover:text-white"
+            >
+              <Link href="/blog">
+                View All Blog Posts
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </Reveal>
+        )}
+
+        {/* Blog Stats - only show on blog page */}
+        {showAll && (
+          <Reveal className="mt-16">
+            <div className="grid gap-6 grid-cols-2 sm:gap-8 lg:grid-cols-4">
+              {[
+                { number: blogPosts.length.toString(), label: "Blog Posts" },
+                { number: blogCategories.length.toString(), label: "Categories" },
+                { number: Array.from(new Set(blogPosts.flatMap(p => p.tags))).length.toString(), label: "Topics Covered" },
+                { number: Math.round(blogPosts.reduce((acc, post) => acc + post.readingTime, 0) / blogPosts.length).toString() + " min", label: "Avg. Read Time" },
+              ].map((stat, index) => (
                 <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 + 0.2, type: "spring" }}
-                  className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="text-center rounded-lg sm:rounded-xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 backdrop-blur-sm"
                 >
-                  {stat.number}
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 + 0.2, type: "spring" }}
+                    className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+                  >
+                    {stat.number}
+                  </motion.div>
+                  <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-white/70">{stat.label}</p>
                 </motion.div>
-                <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-white/70">{stat.label}</p>
-              </motion.div>
-            ))}
+              ))}
+            </div>
+          </Reveal>
+        )}
+      </div>
+    </section>
+  );
+};
           </div>
         </Reveal>
       </div>

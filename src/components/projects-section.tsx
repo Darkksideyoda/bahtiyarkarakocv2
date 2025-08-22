@@ -203,13 +203,20 @@ export const ProjectsSection: React.FC<{
   projects?: ProjectItem[];
   title?: string;
   id?: string;
-}> = ({ projects = demoProjects, title = "Projects", id = "projects" }) => {
+  showAll?: boolean;
+}> = ({ projects = demoProjects, title = "Projects", id = "projects", showAll = false }) => {
   const [filter, setFilter] = useState<"all" | ProjectItem["category"]>("all");
   
   const categories = ["all", "web", "mobile", "ai", "other"] as const;
-  const filteredProjects = filter === "all" 
+  
+  let filteredProjects = filter === "all" 
     ? projects 
     : projects.filter(p => p.category === filter);
+
+  // On homepage, show only featured projects (max 3)
+  if (!showAll) {
+    filteredProjects = filteredProjects.filter(p => p.featured).slice(0, 3);
+  }
 
   const featuredProjects = filteredProjects.filter(p => p.featured);
   const regularProjects = filteredProjects.filter(p => !p.featured);
@@ -233,24 +240,26 @@ export const ProjectsSection: React.FC<{
         </div>
 
         {/* Filter buttons */}
-        <Reveal className="mb-12 flex flex-wrap justify-center gap-3">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setFilter(category)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                filter === category
-                  ? "bg-blue-600 text-white shadow-lg"
-                  : "border border-white/20 text-white/70 hover:border-white/40 hover:text-white"
-              }`}
-            >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </button>
-          ))}
-        </Reveal>
+        {showAll && (
+          <Reveal className="mb-12 flex flex-wrap justify-center gap-3">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setFilter(category)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                  filter === category
+                    ? "bg-blue-600 text-white shadow-lg"
+                    : "border border-white/20 text-white/70 hover:border-white/40 hover:text-white"
+                }`}
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </button>
+            ))}
+          </Reveal>
+        )}
 
         {/* Featured projects */}
-        {featuredProjects.length > 0 && (
+        {featuredProjects.length > 0 && showAll && (
           <div className="mb-12 grid gap-8 md:grid-cols-2 justify-items-center">
             {featuredProjects.map((project, index) => (
               <ProjectCard
@@ -264,32 +273,64 @@ export const ProjectsSection: React.FC<{
         )}
 
         {/* Regular projects */}
-        {regularProjects.length > 0 && (
+        {(regularProjects.length > 0 && showAll) || (!showAll && filteredProjects.length > 0) && (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {regularProjects.map((project, index) => (
+            {(showAll ? regularProjects : filteredProjects).map((project, index) => (
               <ProjectCard
                 key={project.id}
                 project={project}
-                index={index + featuredProjects.length}
+                index={showAll ? index + featuredProjects.length : index}
               />
             ))}
           </div>
         )}
 
-        {/* View more */}
-        <Reveal className="mt-16 text-center">
-          <Button
-            variant="outline"
-            size="lg"
-            asChild
-            className="rounded-full border-2 border-white/20 px-8 py-3 text-white/80 backdrop-blur-sm hover:border-blue-400 hover:text-white"
-          >
-            <a href="https://github.com/Darkksideyoda" target="_blank" rel="noopener noreferrer">
-              View All Projects on GitHub
-              <ChevronRight className="ml-2 h-4 w-4" />
-            </a>
-          </Button>
-        </Reveal>
+        {/* View more - only show on homepage */}
+        {!showAll && (
+          <Reveal className="mt-16 text-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                variant="outline"
+                size="lg"
+                asChild
+                className="rounded-full border-2 border-white/20 px-8 py-3 text-white/80 backdrop-blur-sm hover:border-blue-400 hover:text-white"
+              >
+                <a href="/projects">
+                  View All Projects
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                asChild
+                className="rounded-full border-2 border-white/20 px-8 py-3 text-white/80 backdrop-blur-sm hover:border-blue-400 hover:text-white"
+              >
+                <a href="https://github.com/Darkksideyoda" target="_blank" rel="noopener noreferrer">
+                  GitHub Profile
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
+            </div>
+          </Reveal>
+        )}
+
+        {/* GitHub link - only show on projects page */}
+        {showAll && (
+          <Reveal className="mt-16 text-center">
+            <Button
+              variant="outline"
+              size="lg"
+              asChild
+              className="rounded-full border-2 border-white/20 px-8 py-3 text-white/80 backdrop-blur-sm hover:border-blue-400 hover:text-white"
+            >
+              <a href="https://github.com/Darkksideyoda" target="_blank" rel="noopener noreferrer">
+                View More on GitHub
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </a>
+            </Button>
+          </Reveal>
+        )}
       </div>
     </section>
   );
