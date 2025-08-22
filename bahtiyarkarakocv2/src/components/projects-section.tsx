@@ -251,7 +251,7 @@ export const ProjectsSection: React.FC<{
 
         {/* Featured projects */}
         {featuredProjects.length > 0 && (
-          <div className="mb-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mb-12 grid gap-8 justify-items-center md:grid-cols-2">
             {featuredProjects.map((project, index) => (
               <ProjectCard
                 key={project.id}
@@ -265,7 +265,7 @@ export const ProjectsSection: React.FC<{
 
         {/* Regular projects */}
         {regularProjects.length > 0 && (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {regularProjects.map((project, index) => (
               <ProjectCard
                 key={project.id}
