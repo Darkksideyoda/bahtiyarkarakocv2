@@ -251,7 +251,7 @@ export const ProjectsSection: React.FC<{
 
         {/* Featured projects */}
         {featuredProjects.length > 0 && (
-          <div className="mb-12 grid gap-8 justify-items-center md:grid-cols-2">
+          <div className="mb-12 grid gap-8 md:grid-cols-2 justify-items-center">
             {featuredProjects.map((project, index) => (
               <ProjectCard
                 key={project.id}
