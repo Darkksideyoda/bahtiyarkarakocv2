@@ -5,12 +5,14 @@ import { AboutSection } from "@/components/about-section";
 import { ContactSection } from "@/components/contact-section";
 import SiteBackground from "@/components/site-background";
 import FloatingNav from "@/components/floating-nav";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function Home() {
   return (
     <main className="relative">
       <SiteBackground /> 
       <FloatingNav />
+      <ThemeToggle />
       <div id="hero">
         <HeroSection />
       </div>
