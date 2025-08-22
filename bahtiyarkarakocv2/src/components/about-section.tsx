@@ -88,7 +88,7 @@ const skillCategories = [
 
 const TechChip: React.FC<{
   tech: { name: string; icon: any; color: string };
-  index,
+  index: number;
 }> = ({ tech, index }) => {
   const IconComponent = tech.icon;
 
