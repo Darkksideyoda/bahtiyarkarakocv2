@@ -23,7 +23,6 @@ import {
   SiExpress,
   SiFastapi,
   SiRedis,
-  SiAmazonaws,
   SiVercel,
   SiVite,
   SiWebpack,
@@ -31,6 +30,7 @@ import {
   SiPrettier,
 } from "react-icons/si";
 import { FaFigma } from "react-icons/fa";
+import { FaAmazon } from "react-icons/fa";
 import { VscCode } from "react-icons/vsc";
 
 const skillCategories = [
@@ -67,7 +67,7 @@ const skillCategories = [
     technologies: [
       { name: "Git", icon: SiGit, color: "#F05032" },
       { name: "Docker", icon: SiDocker, color: "#2496ED" },
-      { name: "AWS", icon: SiAmazonaws, color: "#FF9900" },
+      { name: "AWS", icon: FaAmazon, color: "#FF9900" },
       { name: "Vercel", icon: SiVercel, color: "#000000" },
       { name: "Vite", icon: SiVite, color: "#646CFF" },
       { name: "Webpack", icon: SiWebpack, color: "#8DD6F9" },
