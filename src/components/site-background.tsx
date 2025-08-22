@@ -23,11 +23,11 @@ export default function SiteBackground() {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">
       {/* Static gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20 transition-colors duration-500" />
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20" />
 
       {/* Animated radial textures */}
       <motion.div
-        className="absolute inset-0 transition-opacity duration-500"
+        className="absolute inset-0"
         animate={{ backgroundPositionX: ["0%", "100%", "0%"] }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         style={{
@@ -42,7 +42,7 @@ export default function SiteBackground() {
         particles.map((p, i) => (
           <motion.span
             key={i}
-            className="absolute rounded-full bg-white/70 dark:bg-white/30 transition-colors duration-500"
+            className="absolute rounded-full bg-white/70"
             style={{
               left: p.left,
               top: p.top,
