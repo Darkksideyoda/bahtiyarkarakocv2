@@ -29,6 +29,8 @@ import {
   SiWebpack,
   SiEslint,
   SiPrettier,
+  SiFigma,
+  SiVisualstudiocode,
 } from "react-icons/si";
 
 const skillCategories = [
