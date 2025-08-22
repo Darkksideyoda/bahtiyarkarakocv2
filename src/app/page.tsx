@@ -4,12 +4,16 @@ import { ProjectsSection } from "@/components/projects-section";
 import { AboutSection } from "@/components/about-section";
 import { ContactSection } from "@/components/contact-section";
 import SiteBackground from "@/components/site-background";
+import FloatingNav from "@/components/floating-nav";
 
 export default function Home() {
   return (
     <main className="relative">
       <SiteBackground /> 
-      <HeroSection />
+      <FloatingNav />
+      <div id="hero">
+        <HeroSection />
+      </div>
       <AboutSection id="about" />
       <ExperiencePath id="experience" />
       <ProjectsSection id="projects" />
