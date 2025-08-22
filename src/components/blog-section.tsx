@@ -26,14 +26,6 @@ export default function FloatingNav() {
       setIsVisible(window.scrollY > 100);
     };
 
-      }
-    } else {
-      // For other sections, go to homepage first if needed, then scroll
-      if (pathname !== "/") {
-        window.location.href = `/#${itemId}`;
-      } else {
-        smoothScrollTo(itemId);
-      }
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
