@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { LazyMotion, MotionConfig } from "framer-motion";
+import MotionWrapper from "@/components/motion-wrapper";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -59,9 +59,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Lazy load motion features
-const loadFeatures = () =>
-  import("../lib/motion-features").then(res => res.default);
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -99,14 +96,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <LazyMotion features={loadFeatures} strict>
-          <MotionConfig
-            transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
-            reducedMotion="user"
-          >
-            {children}
-          </MotionConfig>
-        </LazyMotion>
+        <MotionWrapper>
+          {children}
+        </MotionWrapper>
       </body>
     </html>
   );
