@@ -12,7 +12,6 @@ const nextConfig: NextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
   },
-  
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react'],
   },
