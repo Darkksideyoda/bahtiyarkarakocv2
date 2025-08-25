@@ -2,13 +2,16 @@
 import { m, useScroll, useTransform } from "framer-motion";
 import React, { useRef } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { durations, easings, viewportDefault } from "@/lib/motion-tokens";
 
-/** Basit fade + y kaydırma */
+/**
+ * Simple fade + y slide animation component
+ */
 export function Reveal({
   children,
   y = 24,
   delay = 0,
-  duration = 0.3,
+  duration = durations.base,
   amount = 0.2,
   once = true,
   className = "",
@@ -31,7 +34,7 @@ export function Reveal({
       viewport={{ once, amount }}
       transition={{ 
         duration: shouldReduceMotion ? 0.1 : duration, 
-        ease: "easeOut", 
+        ease: easings.out, 
         delay: shouldReduceMotion ? 0 : delay 
       }}
     >
@@ -40,7 +43,9 @@ export function Reveal({
   );
 }
 
-/** Scroll oldukça Y ekseninde parallax (başlıklar vs.) */
+/**
+ * Parallax Y animation based on scroll progress
+ */
 export function ParallaxY({
   children,
   from = 16,

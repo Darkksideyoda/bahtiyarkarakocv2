@@ -1,9 +1,9 @@
 // src/app/blog/[slug]/page.tsx
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts } from "@/data/blog-posts";
 import { BlogPostPage } from "@/components/blog-post-page";
-import SiteBackground from "@/components/site-background";
+import { SiteBackground } from "@/components/layout/site-background";
 import FloatingNav from "@/components/floating-nav";
 
 export async function generateStaticParams() {

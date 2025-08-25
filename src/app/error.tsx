@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Home, AlertTriangle } from "lucide-react";
 import Link from "next/link";
-import SiteBackground from "@/components/site-background";
+import { SiteBackground } from "@/components/layout/site-background";
 
 export default function Error({
   error,

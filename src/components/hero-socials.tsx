@@ -2,7 +2,7 @@
 
 import { Github, Linkedin } from "lucide-react";
 
-export default function HeroSocials() {
+export function HeroSocials() {
   const links = [
     { href: "https://github.com/Darkksideyoda", label: "GitHub", Icon: Github, rel: "noopener noreferrer" },
     { href: "https://www.linkedin.com/in/bahtiyar-karakoc-4763b31a1/", label: "LinkedIn", Icon: Linkedin, rel: "noopener noreferrer" },
@@ -33,7 +33,7 @@ export default function HeroSocials() {
             hover:scale-105 focus-visible:ring-2 focus-visible:ring-blue-500/60
           "
         >
-          {/* hover glow (bg YOK) */}
+          {/* hover glow */}
           <span className="
             pointer-events-none absolute inset-0 rounded-full opacity-0
             bg-[radial-gradient(40%_40%_at_50%_50%,rgba(99,102,241,.35),transparent)]

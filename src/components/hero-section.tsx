@@ -4,8 +4,8 @@ import React from "react";
 import { m, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import HeroSocials from "./social-links";
-import HeroAvatar from "./hero-avatar";
+import { HeroSocials } from "./hero-socials";
+import { HeroAvatar } from "./hero-avatar";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 export default function HeroSection() {

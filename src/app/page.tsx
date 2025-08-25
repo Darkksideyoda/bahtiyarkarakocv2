@@ -1,11 +1,12 @@
 import HeroSection from "@/components/hero-section";
-import { ExperiencePath } from "@/components/experience-path";
+import { ExperiencePath } from "@/components/sections/experience-path";
 import { ProjectsSection } from "@/components/projects-section";
 import { AboutSection } from "@/components/about-section";
 import { BlogSection } from "@/components/blog-section";
 import { ContactSection } from "@/components/contact-section";
-import SiteBackground from "@/components/site-background";
+import { SiteBackground } from "@/components/layout/site-background";
 import FloatingNav from "@/components/floating-nav";
+import { experienceItems } from "@/data/experience";
 
 export default function Home() {
   return (
@@ -16,7 +17,7 @@ export default function Home() {
         <HeroSection />
       </div>
       <AboutSection id="about" />
-      <ExperiencePath id="experience" />
+      <ExperiencePath id="experience" items={experienceItems} />
       <ProjectsSection id="projects" />
       <BlogSection id="blog" />
       <ContactSection id="contact" />

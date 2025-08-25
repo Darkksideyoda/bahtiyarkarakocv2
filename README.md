@@ -20,6 +20,58 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Project Structure
+
+```
+src/
+  app/                    # Next.js App Router pages
+  components/
+    common/              # Reusable UI components (Tag, Logo, etc.)
+    sections/            # Page sections (HeroSection, ExperiencePath, etc.)
+    layout/              # Layout components (SiteBackground, FloatingNav)
+    motion/              # Motion primitives and providers
+    ui/                  # Design system primitives
+  data/                  # Static data (blog posts, projects, experience)
+  hooks/                 # Custom React hooks
+  lib/                   # Utilities and configuration
+    analytics/           # Web vitals and analytics helpers
+  types/                 # TypeScript type definitions
+```
+
+## Development Guidelines
+
+### File Naming
+- **kebab-case** for files: `hero-section.tsx`, `motion-tokens.ts`
+- **PascalCase** for React components: `HeroSection`, `MotionDiv`
+- Use named exports for components (avoid default exports except for pages)
+
+### Motion & Animations
+- All motion configuration is centralized in `lib/motion-tokens.ts`
+- Use `MotionPrimitives` from `components/motion/` instead of inline Framer Motion
+- Respect `useReducedMotion` hook for accessibility
+
+### TypeScript
+- Strict mode enabled with additional checks
+- Use `import type` for type-only imports
+- All content types defined in `types/content.ts`
+
+### Styling
+- Tailwind CSS with design tokens
+- Use `cn()` utility for conditional classes
+- Consistent spacing and color systems
+
+## Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run lint:fix     # Fix ESLint issues
+npm run type-check   # Run TypeScript checks
+npm run analyze      # Analyze bundle size
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

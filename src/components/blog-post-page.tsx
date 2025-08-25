@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Clock, User, Tag, Share2, Heart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BlogPost } from "@/types/blog";
+import type { BlogPost } from "@/types/blog";
 import Link from "next/link";
 import Image from "next/image";
 import { Reveal } from "@/components/motion/reveal";

@@ -1,6 +1,6 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { BlogSection } from "@/components/blog-section";
-import SiteBackground from "@/components/site-background";
+import { SiteBackground } from "@/components/layout/site-background";
 import FloatingNav from "@/components/floating-nav";
 
 export const metadata: Metadata = {

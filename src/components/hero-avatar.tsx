@@ -5,13 +5,13 @@ import { m, useMotionValue, useTransform } from "framer-motion";
 import React from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
-export default function HeroAvatar({
+export function HeroAvatar({
   src = "https://avatars.githubusercontent.com/u/53101771?v=4",
   alt = "Bahtiyar Karakoç",
 }: { src?: string; alt?: string }) {
   
   const shouldReduceMotion = useReducedMotion();
-  // hafif parallax için mouse takip (isteğe bağlı)
+  // Light parallax mouse tracking
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-20, 20], shouldReduceMotion ? [0, 0] : [6, -6]);
@@ -31,7 +31,7 @@ export default function HeroAvatar({
       style={{ rotateX, rotateY }}
       className="relative mx-auto mb-8 h-28 w-28 sm:h-32 sm:w-32 lg:h-40 lg:w-40"
     >
-      {/* yumuşak glow */}
+      {/* Soft glow effect */}
       <m.div
         className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500 via-fuchsia-500 to-purple-500 blur-2xl"
         animate={shouldReduceMotion ? { opacity: 0.6 } : { opacity: [0.5, 0.8, 0.5] }}

@@ -4,7 +4,7 @@ import { m } from "framer-motion";
 import React from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
-export default function SiteBackground() {
+export function SiteBackground() {
   const shouldReduceMotion = useReducedMotion();
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);

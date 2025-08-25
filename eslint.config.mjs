@@ -14,6 +14,7 @@ const eslintConfig = [
   ...compat.plugins("jsx-a11y"),
   {
     rules: {
+      // Accessibility rules
       "jsx-a11y/alt-text": "error",
       "jsx-a11y/aria-props": "error",
       "jsx-a11y/aria-proptypes": "error",
@@ -23,6 +24,18 @@ const eslintConfig = [
       "jsx-a11y/heading-has-content": "error",
       "jsx-a11y/anchor-has-content": "error",
       "jsx-a11y/no-redundant-roles": "error",
+      
+      // Import/export rules
+      "no-unused-vars": "error",
+      "prefer-const": "error",
+      
+      // React rules
+      "react/jsx-key": "error",
+      "react/no-unescaped-entities": "error",
+      
+      // TypeScript rules
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
     }
   }
 ];

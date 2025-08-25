@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Home, FolderOpen, BookOpen, ArrowLeft } from "lucide-react";
-import SiteBackground from "@/components/site-background";
+import { SiteBackground } from "@/components/layout/site-background";
 
 export default function NotFound() {
   const handleGoBack = () => {
