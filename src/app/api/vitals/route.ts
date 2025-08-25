@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     const { name, value, id, label } = body;
 
     // Log the Web Vitals data
-    console.log('Web Vitals:', { name, value, id, label });
+    // console.log('Web Vitals:', { name, value, id, label });
 
     // In production, you might want to send this to your analytics service
     // Example: await analytics.track('web-vital', { name, value, id, label });

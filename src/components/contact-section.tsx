@@ -7,28 +7,36 @@ import { Button } from "@/components/ui/button";
 import { ParallaxY, Reveal } from "@/components/motion/reveal";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
-const ContactInfo = [
+type ContactCard = {
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  label: string;
+  value: string;
+  href: string;
+  color: string; // tailwind gradient "from-.. to-.."
+};
+
+const ContactInfo: ContactCard[] = [
   {
     icon: Mail,
     label: "Email",
-    value: "bahtiyar" + "karakoc" + "@" + "gmail.com",
-    href: "mailto:" + "bahtiyar" + "karakoc" + "@" + "gmail.com",
-    color: "from-blue-500 to-cyan-500"
+    value: "contact@bahtiyarkarakoc.com",
+    href: "mailto:contact@bahtiyarkarakoc.com",
+    color: "from-blue-500 to-cyan-500",
   },
   {
     icon: Phone,
     label: "Phone",
     value: "+90 (534) 123-4567",
-    href: "tel:+90" + "534" + "123" + "4567",
-    color: "from-green-500 to-emerald-500"
+    href: "tel:+905341234567", // daha sade/standart
+    color: "from-green-500 to-emerald-500",
   },
   {
     icon: MapPin,
     label: "Location",
     value: "Antalya, Turkey",
     href: "#",
-    color: "from-purple-500 to-pink-500"
-  }
+    color: "from-purple-500 to-pink-500",
+  },
 ];
 
 const SocialLinks = [
@@ -36,14 +44,14 @@ const SocialLinks = [
     icon: Github,
     label: "GitHub",
     href: "https://github.com/Darkksideyoda",
-    color: "#333"
+    color: "#333",
   },
   {
     icon: Linkedin,
-    label: "LinkedIn", 
+    label: "LinkedIn",
     href: "https://www.linkedin.com/in/bahtiyar-karakoc-4763b31a1/",
-    color: "#0077B5"
-  }
+    color: "#0077B5",
+  },
 ];
 
 export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) => {
@@ -53,46 +61,43 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
     email: "",
     subject: "",
     message: "",
-    honeypot: "" // Anti-bot field
+    honeypot: "", // Anti-bot
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // İstersen Gmail compose’u zorunlu kılmak için burayı true yap
+  const USE_GMAIL_COMPOSE = false;
+
+  const gmailHref = React.useMemo(() => {
+    const to = "contact@bahtiyarkarakoc.com";
+    const subject = encodeURIComponent("Hello from your website");
+    const body = encodeURIComponent("Hi Bahtiyar,\n\nI’d like to...");
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${subject}&body=${body}`;
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData((s) => ({ ...s, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Honeypot check
-    if (formData.honeypot) {
-      return; // Bot detected
-    }
-    
+    if (formData.honeypot) return; // bot
+
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Reset form
+
+    // Burayı gerçek bir endpoint’e bağlayabilirsin (ör. /api/contact)
+    await new Promise((r) => setTimeout(r, 1200));
+
     setFormData({ name: "", email: "", subject: "", message: "", honeypot: "" });
     setIsSubmitting(false);
-    
-    // You can integrate with your preferred form handling service here
     alert("Thank you for your message! I'll get back to you soon.");
   };
 
   return (
-    <section 
-      id={id} 
-      className="relative w-full py-24" 
-      style={{ 
-        contentVisibility: "auto",
-        containIntrinsicSize: "0 900px"
-      }}
+    <section
+      id={id}
+      className="relative w-full py-24"
+      style={{ contentVisibility: "auto", containIntrinsicSize: "0 900px" }}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -102,27 +107,28 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
               Get In Touch
             </h2>
           </ParallaxY>
-          
           <ParallaxY from={12} to={-6} className="mt-4">
             <p className="mx-auto max-w-3xl text-base sm:text-lg lg:text-xl text-gray-300">
-              Let's discuss your next project or explore opportunities to work together
+              Let&apos;s discuss your next project or explore opportunities to work together
             </p>
           </ParallaxY>
         </div>
 
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* Contact Information */}
+          {/* Contact Info */}
           <div className="space-y-8">
             <Reveal>
               <h3 className="text-2xl font-bold text-white mb-6">Contact Information</h3>
             </Reveal>
 
-            {/* Contact Cards */}
             <div className="space-y-4">
               {ContactInfo.map((info) => (
                 <Reveal key={info.label} className="block">
+                  {/* mailto/tel linkleri sandbox/iframe’lerde engellenmesin diye target _blank eklendi */}
                   <m.a
                     href={info.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={shouldReduceMotion ? {} : { scale: 1.02, x: 8 }}
                     transition={{ duration: 0.2 }}
                     className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 md:backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
@@ -141,7 +147,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
               ))}
             </div>
 
-            {/* Social Links */}
+            {/* Social */}
             <Reveal>
               <h4 className="text-lg font-semibold text-white mb-4">Connect With Me</h4>
               <div className="flex gap-4">
@@ -157,8 +163,6 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                     aria-label={social.label}
                   >
                     <social.icon className="h-6 w-6 text-white/80 group-hover:text-white transition-colors" />
-                    
-                    {/* Tooltip */}
                     <div className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-lg bg-black/80 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
                       {social.label}
                     </div>
@@ -168,15 +172,15 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
             </Reveal>
           </div>
 
-          {/* Contact Form */}
+          {/* Form */}
           <div className="space-y-6">
             <Reveal>
               <h3 className="text-2xl font-bold text-white mb-6">Send a Message</h3>
             </Reveal>
 
             <Reveal>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Honeypot field - hidden from users */}
+              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+                {/* Honeypot */}
                 <input
                   type="text"
                   name="honeypot"
@@ -186,7 +190,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                   tabIndex={-1}
                   autoComplete="off"
                 />
-                
+
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-2">
@@ -274,24 +278,23 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
           </div>
         </div>
 
-        {/* Call to Action */}
+        {/* CTA */}
         <Reveal className="mt-16 text-center">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:backdrop-blur-sm">
             <MessageCircle className="mx-auto mb-4 h-12 w-12 text-blue-400" />
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Ready to Start a Project?
-            </h3>
+            <h3 className="text-2xl font-bold text-white mb-4">Ready to Start a Project?</h3>
             <p className="text-white/70 mb-6 max-w-2xl mx-auto">
-              I'm always interested in new opportunities and exciting projects. 
-              Whether you need a full-stack developer, AI consultant, or technical advisor, 
-              let's discuss how we can work together.
+              I&apos;m always interested in new opportunities and exciting projects.
+              Whether you need a full-stack developer, AI consultant, or technical advisor,
+              let&apos;s discuss how we can work together.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                asChild
-                className="rounded-full bg-blue-600 px-8 py-3 text-white hover:bg-blue-700"
-              >
-                <a href={"mailto:" + "bahtiyar" + "karakoc" + "@" + "gmail.com"}>
+              <Button asChild className="rounded-full bg-blue-600 px-8 py-3 text-white hover:bg-blue-700">
+                <a
+                  href={USE_GMAIL_COMPOSE ? gmailHref : "mailto:contact@bahtiyarkarakoc.com"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Mail className="mr-2 h-4 w-4" />
                   Email Me
                 </a>
