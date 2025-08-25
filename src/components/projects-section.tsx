@@ -160,7 +160,7 @@ export const ProjectsSection: React.FC<{
   title?: string;
   id?: string;
   showAll?: boolean;
-}> = ({ projectList = projects, title = "Projects", id = "projects", showAll = false }) => {
+}> = ({ projectList = projects, id = "projects", showAll = false }) => {
   const [filter, setFilter] = useState<"all" | ProjectItem["category"]>("all");
   
   const categories = ["all", "web", "mobile", "ai", "other"] as const;

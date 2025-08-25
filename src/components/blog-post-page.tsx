@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Clock, User, Tag, Share2, Heart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { BlogPost } from "@/types/blog";

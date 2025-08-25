@@ -1,6 +1,6 @@
 "use client";
 
-import { m, useScroll, useTransform } from "framer-motion";
+import { m } from "framer-motion";
 import { useRef } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
@@ -12,10 +12,6 @@ export function ExperienceTimeline({ children }: ExperienceTimelineProps) {
   const shouldReduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLDivElement | null>(null);
   
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 80%", "end 20%"],
-  });
 
   return (
     <div ref={sectionRef} className="relative sm:[--line-x:3.5rem]">

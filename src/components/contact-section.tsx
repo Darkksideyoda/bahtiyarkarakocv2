@@ -119,7 +119,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
 
             {/* Contact Cards */}
             <div className="space-y-4">
-              {ContactInfo.map((info, index) => (
+              {ContactInfo.map((info) => (
                 <Reveal key={info.label} className="block">
                   <m.a
                     href={info.href}

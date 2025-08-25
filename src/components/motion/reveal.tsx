@@ -2,7 +2,7 @@
 import { m, useScroll, useTransform } from "framer-motion";
 import React, { useRef } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
-import { durations, easings, viewportDefault } from "@/lib/motion-tokens";
+import { durations, easings } from "@/lib/motion-tokens";
 
 /**
  * Simple fade + y slide animation component
