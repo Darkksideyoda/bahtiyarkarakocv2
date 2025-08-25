@@ -6,6 +6,14 @@ import { Home, FolderOpen, BookOpen, ArrowLeft } from "lucide-react";
 import SiteBackground from "@/components/site-background";
 
 export default function NotFound() {
+  const handleGoBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = '/';
+    }
+  };
+
   return (
     <main className="relative min-h-screen flex items-center justify-center">
       <SiteBackground />
@@ -63,13 +71,11 @@ export default function NotFound() {
         <div className="mt-8">
           <Button
             variant="ghost"
-            asChild
+            onClick={handleGoBack}
             className="text-white/60 hover:text-white/80"
           >
-            <button onClick={() => window.history.back()}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Go Back
-            </button>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Go Back
           </Button>
         </div>
       </div>

@@ -18,6 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://bahtiyarkarakoc.dev'),
   title: "Bahtiyar Karakoç – Software Engineer (React/TS)",
   description: "Passionate Computer Engineer with 2+ years of experience in software development, specializing in React, TypeScript, and AI-powered solutions.",
   keywords: ["Software Engineer", "React", "TypeScript", "Next.js", "Full Stack Developer", "AI", "Indoor Mapping"],
