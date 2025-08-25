@@ -2,41 +2,33 @@
 
 import React, { useState } from "react";
 import { m } from "framer-motion";
-import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageCircle, ExternalLink, Copy } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ParallaxY, Reveal } from "@/components/motion/reveal";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
-type ContactCard = {
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  label: string;
-  value: string;
-  href: string;
-  color: string; // tailwind gradient "from-.. to-.."
-};
-
-const ContactInfo: ContactCard[] = [
+const ContactInfo = [
   {
     icon: Mail,
     label: "Email",
     value: "contact@bahtiyarkarakoc.com",
     href: "mailto:contact@bahtiyarkarakoc.com",
-    color: "from-blue-500 to-cyan-500",
+    color: "from-blue-500 to-cyan-500"
   },
   {
     icon: Phone,
     label: "Phone",
     value: "+90 (534) 123-4567",
-    href: "tel:+905341234567",
-    color: "from-green-500 to-emerald-500",
+    href: "tel:+90" + "534" + "123" + "4567",
+    color: "from-green-500 to-emerald-500"
   },
   {
     icon: MapPin,
     label: "Location",
     value: "Antalya, Turkey",
     href: "#",
-    color: "from-purple-500 to-pink-500",
-  },
+    color: "from-purple-500 to-pink-500"
+  }
 ];
 
 const SocialLinks = [
@@ -44,14 +36,14 @@ const SocialLinks = [
     icon: Github,
     label: "GitHub",
     href: "https://github.com/Darkksideyoda",
-    color: "#333",
+    color: "#333"
   },
   {
     icon: Linkedin,
-    label: "LinkedIn",
+    label: "LinkedIn", 
     href: "https://www.linkedin.com/in/bahtiyar-karakoc-4763b31a1/",
-    color: "#0077B5",
-  },
+    color: "#0077B5"
+  }
 ];
 
 export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) => {
@@ -61,189 +53,46 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
     email: "",
     subject: "",
     message: "",
-    honeypot: "", // Anti-bot
+    honeypot: "" // Anti-bot field
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showEmailOptions, setShowEmailOptions] = useState(false);
-
-  // Gmail compose link oluştur
-  const createGmailLink = (name = "", email = "", subject = "", message = "") => {
-    const params = new URLSearchParams();
-    params.append('view', 'cm');
-    params.append('fs', '1');
-    params.append('to', 'contact@bahtiyarkarakoc.com');
-    
-    if (subject || name) {
-      params.append('su', subject || `Message from ${name || 'Website Visitor'}`);
-    }
-    
-    if (message || name || email) {
-      let body = '';
-      if (name) body += `Name: ${name}\n`;
-      if (email) body += `Email: ${email}\n`;
-      if (message) body += `\nMessage:\n${message}`;
-      if (body) params.append('body', body);
-    }
-    
-    return `https://mail.google.com/mail/?${params.toString()}`;
-  };
-
-  // Outlook compose link oluştur
-  const createOutlookLink = (name = "", email = "", subject = "", message = "") => {
-    const params = new URLSearchParams();
-    params.append('to', 'contact@bahtiyarkarakoc.com');
-    
-    if (subject || name) {
-      params.append('subject', subject || `Message from ${name || 'Website Visitor'}`);
-    }
-    
-    if (message || name || email) {
-      let body = '';
-      if (name) body += `Name: ${name}\n`;
-      if (email) body += `Email: ${email}\n`;
-      if (message) body += `\nMessage:\n${message}`;
-      if (body) params.append('body', body);
-    }
-    
-    return `https://outlook.live.com/owa/?${params.toString()}`;
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((s) => ({ ...s, [e.target.name]: e.target.value }));
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.honeypot) return; // bot
-
+    
+    // Honeypot check
+    if (formData.honeypot) {
+      return; // Bot detected
+    }
+    
     setIsSubmitting(true);
-
-    // Burayı gerçek bir endpoint'e bağlayabilirsin (ör. /api/contact)
-    await new Promise((r) => setTimeout(r, 1200));
-
+    
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Reset form
     setFormData({ name: "", email: "", subject: "", message: "", honeypot: "" });
     setIsSubmitting(false);
+    
+    // You can integrate with your preferred form handling service here
     alert("Thank you for your message! I'll get back to you soon.");
   };
 
-  // Email click handler - alternatif seçenekler göster
-  const handleEmailClick = () => {
-    setShowEmailOptions(true);
-  };
-
-  // Copy email to clipboard
-  const copyEmailToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText('contact@bahtiyarkarakoc.com');
-      alert('Email address copied to clipboard!');
-      setShowEmailOptions(false);
-    } catch (err) {
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = 'contact@bahtiyarkarakoc.com';
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      alert('Email address copied to clipboard!');
-      setShowEmailOptions(false);
-    }
-  };
-
-  // Detect user's platform and suggest appropriate actions
-  const getSystemMailOptions = () => {
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isMac = userAgent.includes('mac');
-    const isWindows = userAgent.includes('win');
-    const isAndroid = userAgent.includes('android');
-    const isIOS = userAgent.includes('iphone') || userAgent.includes('ipad');
-    
-    if (isMac) {
-      return {
-        name: 'Mail (macOS)',
-        instruction: 'Press Cmd+Space, type "Mail", then create new email'
-      };
-    } else if (isWindows) {
-      return {
-        name: 'Mail (Windows)',
-        instruction: 'Press Win+S, type "Mail", then create new email'
-      };
-    } else if (isAndroid) {
-      return {
-        name: 'Gmail/Email App',
-        instruction: 'Open your email app and create new email'
-      };
-    } else if (isIOS) {
-      return {
-        name: 'Mail (iOS)',
-        instruction: 'Open Mail app and create new email'
-      };
-    } else {
-      return {
-        name: 'Email App',
-        instruction: 'Open your email application and create new email'
-      };
-    }
-  };
-
-  // Enhanced default mail app handler
-  const tryDefaultMailApp = () => {
-    const subject = encodeURIComponent(formData.subject || 'Website Contact');
-    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
-    const mailtoUrl = `mailto:contact@bahtiyarkarakoc.com?subject=${subject}&body=${body}`;
-    
-    // Method 1: Try with window.location.href (more reliable than window.open)
-    try {
-      window.location.href = mailtoUrl;
-      setShowEmailOptions(false);
-      return true;
-    } catch (err) {
-      // Method 2: Try with a temporary anchor element
-      try {
-        const tempLink = document.createElement('a');
-        tempLink.href = mailtoUrl;
-        tempLink.style.display = 'none';
-        document.body.appendChild(tempLink);
-        tempLink.click();
-        document.body.removeChild(tempLink);
-        setShowEmailOptions(false);
-        return true;
-      } catch (err2) {
-        // Method 3: Show platform-specific instructions
-        const systemMail = getSystemMailOptions();
-        const instructions = 
-          `Cannot open ${systemMail.name} automatically.\n\n` +
-          `Manual steps:\n` +
-          `1. ${systemMail.instruction}\n` +
-          `2. Send to: contact@bahtiyarkarakoc.com\n` +
-          `3. Subject: ${formData.subject || 'Website Contact'}\n\n` +
-          `(Email address will be copied to clipboard)`;
-        
-        alert(instructions);
-        copyEmailToClipboard();
-        return false;
-      }
-    }
-  };
-
-
-  const handleContactClick = (info: ContactCard) => {
-    if (info.label === 'Email') {
-      handleEmailClick();
-    } else if (info.label === 'Location') {
-      // Location için hiçbir şey yapma ya da harita açabilirsin
-      return;
-    } else {
-      // Tel ve diğer linkler için
-      window.open(info.href);
-    }
-  };
-
   return (
-    <section
-      id={id}
-      className="relative w-full py-24"
-      style={{ contentVisibility: "auto", containIntrinsicSize: "0 900px" }}
+    <section 
+      id={id} 
+      className="relative w-full py-24" 
+      style={{ 
+        contentVisibility: "auto",
+        containIntrinsicSize: "0 900px"
+      }}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -253,28 +102,30 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
               Get In Touch
             </h2>
           </ParallaxY>
+          
           <ParallaxY from={12} to={-6} className="mt-4">
             <p className="mx-auto max-w-3xl text-base sm:text-lg lg:text-xl text-gray-300">
-              Let&apos;s discuss your next project or explore opportunities to work together
+              Let's discuss your next project or explore opportunities to work together
             </p>
           </ParallaxY>
         </div>
 
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* Contact Info */}
+          {/* Contact Information */}
           <div className="space-y-8">
             <Reveal>
               <h3 className="text-2xl font-bold text-white mb-6">Contact Information</h3>
             </Reveal>
 
+            {/* Contact Cards */}
             <div className="space-y-4">
               {ContactInfo.map((info) => (
                 <Reveal key={info.label} className="block">
-                  <m.button
-                    onClick={() => handleContactClick(info)}
+                  <m.a
+                    href={info.href}
                     whileHover={shouldReduceMotion ? {} : { scale: 1.02, x: 8 }}
                     transition={{ duration: 0.2 }}
-                    className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 md:backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06] w-full text-left"
+                    className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 md:backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
                   >
                     <div className={`rounded-lg bg-gradient-to-r ${info.color} p-3`}>
                       <info.icon className="h-6 w-6 text-white" />
@@ -285,12 +136,12 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                         {info.value}
                       </p>
                     </div>
-                  </m.button>
+                  </m.a>
                 </Reveal>
               ))}
             </div>
 
-            {/* Social */}
+            {/* Social Links */}
             <Reveal>
               <h4 className="text-lg font-semibold text-white mb-4">Connect With Me</h4>
               <div className="flex gap-4">
@@ -306,6 +157,8 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                     aria-label={social.label}
                   >
                     <social.icon className="h-6 w-6 text-white/80 group-hover:text-white transition-colors" />
+                    
+                    {/* Tooltip */}
                     <div className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-lg bg-black/80 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
                       {social.label}
                     </div>
@@ -315,15 +168,15 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
             </Reveal>
           </div>
 
-          {/* Form */}
+          {/* Contact Form */}
           <div className="space-y-6">
             <Reveal>
               <h3 className="text-2xl font-bold text-white mb-6">Send a Message</h3>
             </Reveal>
 
             <Reveal>
-              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-                {/* Honeypot */}
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Honeypot field - hidden from users */}
                 <input
                   type="text"
                   name="honeypot"
@@ -333,7 +186,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                   tabIndex={-1}
                   autoComplete="off"
                 />
-
+                
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-2">
@@ -421,23 +274,27 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
           </div>
         </div>
 
-        {/* CTA */}
+        {/* Call to Action */}
         <Reveal className="mt-16 text-center">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:backdrop-blur-sm">
             <MessageCircle className="mx-auto mb-4 h-12 w-12 text-blue-400" />
-            <h3 className="text-2xl font-bold text-white mb-4">Ready to Start a Project?</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">
+              Ready to Start a Project?
+            </h3>
             <p className="text-white/70 mb-6 max-w-2xl mx-auto">
-              I&apos;m always interested in new opportunities and exciting projects.
-              Whether you need a full-stack developer, AI consultant, or technical advisor,
-              let&apos;s discuss how we can work together.
+              I'm always interested in new opportunities and exciting projects. 
+              Whether you need a full-stack developer, AI consultant, or technical advisor, 
+              let's discuss how we can work together.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                onClick={() => setShowEmailOptions(true)}
+              <Button
+                asChild
                 className="rounded-full bg-blue-600 px-8 py-3 text-white hover:bg-blue-700"
               >
-                <Mail className="mr-2 h-4 w-4" />
-                Email Me
+                <a href={"mailto:contact@bahtiyarkarakoc.com"}>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Email Me
+                </a>
               </Button>
               <Button
                 variant="outline"
@@ -452,62 +309,6 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
           </div>
         </Reveal>
       </div>
-
-      {/* Email Options Modal */}
-      {showEmailOptions && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <m.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="bg-slate-800 rounded-2xl border border-white/10 p-6 max-w-md w-full"
-          >
-            <h3 className="text-xl font-bold text-white mb-4">Choose Email Option</h3>
-            <div className="space-y-3">
-              <button
-                onClick={copyEmailToClipboard}
-                className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] text-white transition-colors"
-              >
-                <Copy className="h-5 w-5" />
-                Copy Email Address
-              </button>
-              <a
-                href={createGmailLink(formData.name, formData.email, formData.subject, formData.message)}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setShowEmailOptions(false)}
-                className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] text-white transition-colors"
-              >
-                <ExternalLink className="h-5 w-5" />
-                Open Gmail
-              </a>
-              <a
-                href={createOutlookLink(formData.name, formData.email, formData.subject, formData.message)}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setShowEmailOptions(false)}
-                className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] text-white transition-colors"
-              >
-                <ExternalLink className="h-5 w-5" />
-                Open Outlook
-              </a>
-              <button
-                onClick={tryDefaultMailApp}
-                className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] text-white transition-colors"
-              >
-                <Mail className="h-5 w-5" />
-                Try Default Mail App
-              </button>
-            </div>
-            <button
-              onClick={() => setShowEmailOptions(false)}
-              className="w-full mt-4 p-2 text-white/60 hover:text-white transition-colors"
-            >
-              Cancel
-            </button>
-          </m.div>
-        </div>
-      )}
     </section>
   );
 };
