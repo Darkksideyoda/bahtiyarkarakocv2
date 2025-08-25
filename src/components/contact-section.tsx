@@ -226,7 +226,6 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
     }
   };
 
-  const isHttp = (href: string) => href.startsWith("http://") || href.startsWith("https://");
 
   const handleContactClick = (info: ContactCard) => {
     if (info.label === 'Email') {
