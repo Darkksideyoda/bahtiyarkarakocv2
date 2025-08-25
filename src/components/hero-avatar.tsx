@@ -35,6 +35,7 @@ export default function HeroAvatar({
         className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500 via-fuchsia-500 to-purple-500 blur-2xl"
         animate={shouldReduceMotion ? { opacity: 0.6 } : { opacity: [0.5, 0.8, 0.5] }}
         transition={shouldReduceMotion ? {} : { duration: 1, repeat: Infinity, ease: "easeInOut" }}
+        loading="eager"
       />
 <m.div
   className="relative rounded-full p-[3px]"

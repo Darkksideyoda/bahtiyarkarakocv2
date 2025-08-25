@@ -4,8 +4,8 @@ import { Github, Linkedin } from "lucide-react";
 
 export default function HeroSocials() {
   const links = [
-    { href: "https://github.com/Darkksideyoda", label: "GitHub", Icon: Github },
-    { href: "https://www.linkedin.com/in/bahtiyar-karakoc-4763b31a1/", label: "LinkedIn", Icon: Linkedin },
+    { href: "https://github.com/Darkksideyoda", label: "GitHub", Icon: Github, rel: "noopener noreferrer" },
+    { href: "https://www.linkedin.com/in/bahtiyar-karakoc-4763b31a1/", label: "LinkedIn", Icon: Linkedin, rel: "noopener noreferrer" },
   ];
 
   return (
@@ -18,12 +18,12 @@ export default function HeroSocials() {
         supports-[padding:max(0px,env(safe-area-inset-right))]:right-[max(0.75rem,env(safe-area-inset-right))]
       "
     >
-      {links.map(({ href, label, Icon }) => (
+      {links.map(({ href, label, Icon, rel }) => (
         <a
           key={label}
           href={href}
           target="_blank"
-          rel="noopener noreferrer"
+          rel={rel}
           aria-label={label}
           title={label}
           className="

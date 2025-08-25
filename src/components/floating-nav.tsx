@@ -133,7 +133,7 @@ export default function FloatingNav() {
             transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
             className="fixed top-6 left-1/2 z-50 hidden -translate-x-1/2 transform md:block"
           >
-            <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 py-2 md:backdrop-blur-md">
+            <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/40 px-2 py-2">
               {/* CV Download Button */}
               <a
                 href="/cv.pdf"
@@ -207,7 +207,7 @@ export default function FloatingNav() {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-black/20 md:backdrop-blur-md transition-all duration-300 hover:scale-105 md:hidden"
+            className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-black/40 transition-all duration-300 hover:scale-105 md:hidden"
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
             {isMobileMenuOpen ? (
@@ -229,7 +229,7 @@ export default function FloatingNav() {
             transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
             className="fixed bottom-24 right-6 z-40 md:hidden"
           >
-            <div className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 md:backdrop-blur-md">
+            <div className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/40 p-3">
               {/* Mobile CV Download */}
               <a
                 href="/cv.pdf"
@@ -293,7 +293,7 @@ export default function FloatingNav() {
             exit={{ opacity: 0 }}
             transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
             onClick={() => setIsMobileMenuOpen(false)}
-            className="fixed inset-0 z-30 bg-black/20 md:backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-30 bg-black/20 md:hidden"
           />
         )}
       </AnimatePresence>

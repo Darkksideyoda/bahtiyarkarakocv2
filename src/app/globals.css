@@ -29,7 +29,6 @@ body {
 @media (pointer: coarse) {
   * {
     backdrop-filter: none !important;
-    filter: none !important;
   }
   
   .blur-xl,
@@ -37,13 +36,12 @@ body {
   .backdrop-blur-sm,
   .backdrop-blur-md {
     backdrop-filter: none !important;
-    filter: none !important;
   }
 }
 
 /* Focus styles for accessibility */
 *:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 3px solid #3b82f6;
   outline-offset: 2px;
   border-radius: 4px;
 }

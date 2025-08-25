@@ -11,15 +11,15 @@ const ContactInfo = [
   {
     icon: Mail,
     label: "Email",
-    value: "bahtiyarkarakoc@gmail.com",
-    href: "mailto:bahtiyarkarakoc@gmail.com",
+    value: "bahtiyar" + "karakoc" + "@" + "gmail.com",
+    href: "mailto:" + "bahtiyar" + "karakoc" + "@" + "gmail.com",
     color: "from-blue-500 to-cyan-500"
   },
   {
     icon: Phone,
     label: "Phone",
     value: "+90 (534) 123-4567",
-    href: "tel:+905341234567",
+    href: "tel:+90" + "534" + "123" + "4567",
     color: "from-green-500 to-emerald-500"
   },
   {
@@ -86,7 +86,14 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
   };
 
   return (
-    <section id={id} className="relative w-full py-24" style={{ contentVisibility: "auto" }}>
+    <section 
+      id={id} 
+      className="relative w-full py-24" 
+      style={{ 
+        contentVisibility: "auto",
+        containIntrinsicSize: "0 900px"
+      }}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">
@@ -284,7 +291,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                 asChild
                 className="rounded-full bg-blue-600 px-8 py-3 text-white hover:bg-blue-700"
               >
-                <a href="mailto:bahtiyarkarakoc@gmail.com">
+                <a href={"mailto:" + "bahtiyar" + "karakoc" + "@" + "gmail.com"}>
                   <Mail className="mr-2 h-4 w-4" />
                   Email Me
                 </a>

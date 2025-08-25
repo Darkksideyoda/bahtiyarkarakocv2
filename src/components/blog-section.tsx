@@ -189,7 +189,14 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ id, showAll = false })
   const regularPosts = displayPosts.filter(post => !post.featured);
 
   return (
-    <section id={id} className="py-20 px-4 sm:px-6 lg:px-8" style={{ contentVisibility: showAll ? "auto" : undefined }}>
+    <section 
+      id={id} 
+      className="py-20 px-4 sm:px-6 lg:px-8" 
+      style={{ 
+        contentVisibility: showAll ? "auto" : "auto",
+        containIntrinsicSize: showAll ? "0 1500px" : "0 800px"
+      }}
+    >
       <div className="max-w-7xl mx-auto">
         <m.div
           initial={{ opacity: 0, y: 20 }}

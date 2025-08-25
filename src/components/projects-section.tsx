@@ -7,73 +7,9 @@ import { Button } from "@/components/ui/button";
 import { ParallaxY, Reveal } from "@/components/motion/reveal";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import Image from "next/image";
+import { projects } from "@/data/projects";
+import type { ProjectItem } from "@/data/projects";
 
-export type ProjectItem = {
-  id: string;
-  title: string;
-  description: string;
-  longDescription?: string;
-  technologies: string[];
-  imageUrl?: string;
-  liveUrl?: string;
-  githubUrl?: string;
-  featured?: boolean;
-  status: "completed" | "in-progress" | "planned";
-  category: "web" | "mobile" | "desktop" | "ai" | "other";
-};
-
-const demoProjects: ProjectItem[] = [
-  {
-    id: "indoor-mapping",
-    title: "Indoor Mapping & Navigation System",
-    description: "Real-time indoor mapping solution with person tracking using radar sensors and digital twin visualization.",
-    longDescription: "A comprehensive indoor mapping platform that combines real-time person tracking with interactive digital twin interfaces. Built for smart building applications with WebSocket integration for live updates.",
-    technologies: ["React", "TypeScript", "Node.js", "WebSocket", "Three.js", "Radar API"],
-    imageUrl: "https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=800",
-    liveUrl: "#",
-    githubUrl: "#",
-    featured: true,
-    status: "completed",
-    category: "web"
-  },
-  {
-    id: "hospital-management",
-    title: "Emergency Department Dashboard",
-    description: "Real-time emergency department status displays and patient queue management system for healthcare facilities.",
-    longDescription: "Developed during my internship at Antalya Atatürk State Hospital. Features real-time patient tracking, queue management, and emergency status displays for medical staff.",
-    technologies: ["JavaScript", "HTML5", "CSS3", "Real-time APIs", "Healthcare Systems"],
-    imageUrl: "https://images.pexels.com/photos/263402/pexels-photo-263402.jpeg?auto=compress&cs=tinysrgb&w=800",
-    githubUrl: "#",
-    featured: false,
-    status: "completed",
-    category: "web"
-  },
-  {
-    id: "portfolio-v2",
-    title: "Personal Portfolio Website",
-    description: "Modern, responsive portfolio website built with Next.js, featuring smooth animations and interactive elements.",
-    longDescription: "This very website! Built with modern web technologies including Next.js 15, Tailwind CSS, and Framer Motion. Features smooth scrolling, animated components, and responsive design.",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "React"],
-    imageUrl: "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800",
-    liveUrl: "#",
-    githubUrl: "https://github.com/Darkksideyoda",
-    featured: true,
-    status: "in-progress",
-    category: "web"
-  },
-  {
-    id: "ai-project",
-    title: "AI-Powered Data Analysis Tool",
-    description: "Machine learning application for data pattern recognition and automated insights generation.",
-    longDescription: "An intelligent data analysis platform that uses machine learning algorithms to identify patterns and generate automated insights from complex datasets.",
-    technologies: ["Python", "TensorFlow", "React", "FastAPI", "PostgreSQL"],
-    imageUrl: "https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=800",
-    githubUrl: "#",
-    featured: false,
-    status: "planned",
-    category: "ai"
-  }
-];
 
 const ProjectCard: React.FC<{
   project: ProjectItem;
@@ -150,6 +86,16 @@ const ProjectCard: React.FC<{
         <p className="mb-4 text-sm leading-relaxed text-white/70">
           {project.description}
         </p>
+        
+        {/* Challenge & Impact */}
+        <div className="mb-4 space-y-2">
+          <p className="text-xs text-blue-300 font-medium">
+            <span className="text-white/60">Challenge:</span> {project.challenge}
+          </p>
+          <p className="text-xs text-green-300 font-medium">
+            <span className="text-white/60">Impact:</span> {project.impact}
+          </p>
+        </div>
 
         {/* Technologies */}
         <div className="mb-4 flex flex-wrap gap-2">
@@ -210,18 +156,18 @@ const ProjectCard: React.FC<{
 };
 
 export const ProjectsSection: React.FC<{
-  projects?: ProjectItem[];
+  projectList?: ProjectItem[];
   title?: string;
   id?: string;
   showAll?: boolean;
-}> = ({ projects = demoProjects, title = "Projects", id = "projects", showAll = false }) => {
+}> = ({ projectList = projects, title = "Projects", id = "projects", showAll = false }) => {
   const [filter, setFilter] = useState<"all" | ProjectItem["category"]>("all");
   
   const categories = ["all", "web", "mobile", "ai", "other"] as const;
   
   let filteredProjects = filter === "all" 
-    ? projects 
-    : projects.filter(p => p.category === filter);
+    ? projectList 
+    : projectList.filter(p => p.category === filter);
 
   // On homepage, show only featured projects (max 3)
   if (!showAll) {
@@ -232,7 +178,14 @@ export const ProjectsSection: React.FC<{
   const regularProjects = filteredProjects.filter(p => !p.featured);
 
   return (
-    <section id={id} className="relative w-full py-24" style={{ contentVisibility: "auto" }}>
+    <section 
+      id={id} 
+      className="relative w-full py-24" 
+      style={{ 
+        contentVisibility: showAll ? "auto" : "auto",
+        containIntrinsicSize: showAll ? "0 1200px" : "0 800px"
+      }}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">

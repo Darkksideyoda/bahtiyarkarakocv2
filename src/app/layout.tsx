@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import MotionWrapper from "@/components/motion-wrapper";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -54,8 +56,13 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "your-google-verification-code",
+  alternates: {
+    canonical: "https://bahtiyarkarakoc.dev",
+    types: {
+      'application/rss+xml': [
+        { url: '/rss.xml', title: 'Bahtiyar Karakoç Blog RSS Feed' }
+      ]
+    }
   },
 };
 
@@ -98,6 +105,8 @@ export default function RootLayout({
       >
         <MotionWrapper>
           {children}
+          <Analytics />
+          <SpeedInsights />
         </MotionWrapper>
       </body>
     </html>

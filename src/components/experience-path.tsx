@@ -155,7 +155,14 @@ export const ExperiencePath: React.FC<{
   const lineOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
 
   return (
-    <section id={id} className="relative w-full py-24" style={{ contentVisibility: "auto" }}>
+    <section 
+      id={id} 
+      className="relative w-full py-24" 
+      style={{ 
+        contentVisibility: "auto",
+        containIntrinsicSize: "0 1000px"
+      }}
+    >
       <div ref={sectionRef} className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
       <div className="mb-12 text-center">
   <ParallaxY from={20} to={-10}>

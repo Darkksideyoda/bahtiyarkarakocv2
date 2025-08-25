@@ -165,7 +165,14 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section id={id} className="relative w-full py-24" style={{ contentVisibility: "auto" }}>
+    <section 
+      id={id} 
+      className="relative w-full py-24" 
+      style={{ 
+        contentVisibility: "auto",
+        containIntrinsicSize: "0 800px"
+      }}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">
