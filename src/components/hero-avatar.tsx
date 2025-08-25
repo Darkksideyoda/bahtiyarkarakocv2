@@ -9,6 +9,7 @@ export default function HeroAvatar({
   src = "https://avatars.githubusercontent.com/u/53101771?v=4",
   alt = "Bahtiyar Karakoç",
 }: { src?: string; alt?: string }) {
+  
   const shouldReduceMotion = useReducedMotion();
   // hafif parallax için mouse takip (isteğe bağlı)
   const x = useMotionValue(0);
