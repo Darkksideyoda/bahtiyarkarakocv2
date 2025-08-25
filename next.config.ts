@@ -36,8 +36,6 @@ const nextConfig: NextConfig = {
 
   async headers() {
     const cacheHeaders = [
-      // ⬇️  Burada artık non-capturing `(?:...)` yok; normal grup kullanılıyor.
-      // Next dokümantasyonundaki kalıba uygun: '/:all*(svg|jpg|png|...)'
       {
         source: "/:all*(avif|webp|png|jpg|jpeg|svg|ico)",
         headers: [{ key: "Cache-Control", value: `public, max-age=${oneYear}, immutable` }],
