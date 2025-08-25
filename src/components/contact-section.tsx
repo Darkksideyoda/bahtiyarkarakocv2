@@ -92,7 +92,10 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
     setIsSubmitting(false);
     alert("Thank you for your message! I'll get back to you soon.");
   };
+  
+  const isHttp = (href: string) => href.startsWith("http://") || href.startsWith("https://");
 
+  
   return (
     <section
       id={id}
@@ -126,23 +129,23 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                 <Reveal key={info.label} className="block">
                   {/* mailto/tel linkleri sandbox/iframe’lerde engellenmesin diye target _blank eklendi */}
                   <m.a
-                    href={info.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={shouldReduceMotion ? {} : { scale: 1.02, x: 8 }}
-                    transition={{ duration: 0.2 }}
-                    className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 md:backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
-                  >
-                    <div className={`rounded-lg bg-gradient-to-r ${info.color} p-3`}>
-                      <info.icon className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-white/60">{info.label}</p>
-                      <p className="text-white font-medium group-hover:text-blue-300 transition-colors">
-                        {info.value}
-                      </p>
-                    </div>
-                  </m.a>
+  href={info.href}
+  // http/https ise yeni sekmede aç, mailto/tel ise AÇMA
+  {...(isHttp(info.href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+  whileHover={shouldReduceMotion ? {} : { scale: 1.02, x: 8 }}
+  transition={{ duration: 0.2 }}
+  className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 md:backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
+>
+  <div className={`rounded-lg bg-gradient-to-r ${info.color} p-3`}>
+    <info.icon className="h-6 w-6 text-white" />
+  </div>
+  <div>
+    <p className="text-sm text-white/60">{info.label}</p>
+    <p className="text-white font-medium group-hover:text-blue-300 transition-colors">
+      {info.value}
+    </p>
+  </div>
+</m.a>
                 </Reveal>
               ))}
             </div>
