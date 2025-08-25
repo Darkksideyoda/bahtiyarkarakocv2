@@ -1,12 +1,13 @@
 import { Metadata } from "next";
-import { type PageProps } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts } from "@/data/blog-posts";
 import { BlogPostPage } from "@/components/blog-post-page";
 import SiteBackground from "@/components/site-background";
 import FloatingNav from "@/components/floating-nav";
 
-interface BlogPostPageProps extends PageProps<{ slug: string }> {}
+interface BlogPostPageProps {
+  params: { slug: string };
+}
 
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
