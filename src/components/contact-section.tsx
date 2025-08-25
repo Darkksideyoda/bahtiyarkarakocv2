@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { m } from "framer-motion";
-import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageCircle, ExternalLink, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ParallaxY, Reveal } from "@/components/motion/reveal";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
@@ -27,7 +27,7 @@ const ContactInfo: ContactCard[] = [
     icon: Phone,
     label: "Phone",
     value: "+90 (534) 123-4567",
-    href: "tel:+905341234567", // daha sade/standart
+    href: "tel:+905341234567",
     color: "from-green-500 to-emerald-500",
   },
   {
@@ -64,16 +64,49 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
     honeypot: "", // Anti-bot
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showEmailOptions, setShowEmailOptions] = useState(false);
 
-  // İstersen Gmail compose’u zorunlu kılmak için burayı true yap
-  const USE_GMAIL_COMPOSE = false;
+  // Gmail compose link oluştur
+  const createGmailLink = (name = "", email = "", subject = "", message = "") => {
+    const params = new URLSearchParams();
+    params.append('view', 'cm');
+    params.append('fs', '1');
+    params.append('to', 'contact@bahtiyarkarakoc.com');
+    
+    if (subject || name) {
+      params.append('su', subject || `Message from ${name || 'Website Visitor'}`);
+    }
+    
+    if (message || name || email) {
+      let body = '';
+      if (name) body += `Name: ${name}\n`;
+      if (email) body += `Email: ${email}\n`;
+      if (message) body += `\nMessage:\n${message}`;
+      if (body) params.append('body', body);
+    }
+    
+    return `https://mail.google.com/mail/?${params.toString()}`;
+  };
 
-  const gmailHref = React.useMemo(() => {
-    const to = "contact@bahtiyarkarakoc.com";
-    const subject = encodeURIComponent("Hello from your website");
-    const body = encodeURIComponent("Hi Bahtiyar,\n\nI’d like to...");
-    return `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${subject}&body=${body}`;
-  }, []);
+  // Outlook compose link oluştur
+  const createOutlookLink = (name = "", email = "", subject = "", message = "") => {
+    const params = new URLSearchParams();
+    params.append('to', 'contact@bahtiyarkarakoc.com');
+    
+    if (subject || name) {
+      params.append('subject', subject || `Message from ${name || 'Website Visitor'}`);
+    }
+    
+    if (message || name || email) {
+      let body = '';
+      if (name) body += `Name: ${name}\n`;
+      if (email) body += `Email: ${email}\n`;
+      if (message) body += `\nMessage:\n${message}`;
+      if (body) params.append('body', body);
+    }
+    
+    return `https://outlook.live.com/owa/?${params.toString()}`;
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((s) => ({ ...s, [e.target.name]: e.target.value }));
@@ -85,17 +118,128 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
 
     setIsSubmitting(true);
 
-    // Burayı gerçek bir endpoint’e bağlayabilirsin (ör. /api/contact)
+    // Burayı gerçek bir endpoint'e bağlayabilirsin (ör. /api/contact)
     await new Promise((r) => setTimeout(r, 1200));
 
     setFormData({ name: "", email: "", subject: "", message: "", honeypot: "" });
     setIsSubmitting(false);
     alert("Thank you for your message! I'll get back to you soon.");
   };
-  
+
+  // Email click handler - alternatif seçenekler göster
+  const handleEmailClick = () => {
+    setShowEmailOptions(true);
+  };
+
+  // Copy email to clipboard
+  const copyEmailToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText('contact@bahtiyarkarakoc.com');
+      alert('Email address copied to clipboard!');
+      setShowEmailOptions(false);
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = 'contact@bahtiyarkarakoc.com';
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      alert('Email address copied to clipboard!');
+      setShowEmailOptions(false);
+    }
+  };
+
+  // Detect user's platform and suggest appropriate actions
+  const getSystemMailOptions = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isMac = userAgent.includes('mac');
+    const isWindows = userAgent.includes('win');
+    const isAndroid = userAgent.includes('android');
+    const isIOS = userAgent.includes('iphone') || userAgent.includes('ipad');
+    
+    if (isMac) {
+      return {
+        name: 'Mail (macOS)',
+        instruction: 'Press Cmd+Space, type "Mail", then create new email'
+      };
+    } else if (isWindows) {
+      return {
+        name: 'Mail (Windows)',
+        instruction: 'Press Win+S, type "Mail", then create new email'
+      };
+    } else if (isAndroid) {
+      return {
+        name: 'Gmail/Email App',
+        instruction: 'Open your email app and create new email'
+      };
+    } else if (isIOS) {
+      return {
+        name: 'Mail (iOS)',
+        instruction: 'Open Mail app and create new email'
+      };
+    } else {
+      return {
+        name: 'Email App',
+        instruction: 'Open your email application and create new email'
+      };
+    }
+  };
+
+  // Enhanced default mail app handler
+  const tryDefaultMailApp = () => {
+    const subject = encodeURIComponent(formData.subject || 'Website Contact');
+    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
+    const mailtoUrl = `mailto:contact@bahtiyarkarakoc.com?subject=${subject}&body=${body}`;
+    
+    // Method 1: Try with window.location.href (more reliable than window.open)
+    try {
+      window.location.href = mailtoUrl;
+      setShowEmailOptions(false);
+      return true;
+    } catch (err) {
+      // Method 2: Try with a temporary anchor element
+      try {
+        const tempLink = document.createElement('a');
+        tempLink.href = mailtoUrl;
+        tempLink.style.display = 'none';
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
+        setShowEmailOptions(false);
+        return true;
+      } catch (err2) {
+        // Method 3: Show platform-specific instructions
+        const systemMail = getSystemMailOptions();
+        const instructions = 
+          `Cannot open ${systemMail.name} automatically.\n\n` +
+          `Manual steps:\n` +
+          `1. ${systemMail.instruction}\n` +
+          `2. Send to: contact@bahtiyarkarakoc.com\n` +
+          `3. Subject: ${formData.subject || 'Website Contact'}\n\n` +
+          `(Email address will be copied to clipboard)`;
+        
+        alert(instructions);
+        copyEmailToClipboard();
+        return false;
+      }
+    }
+  };
+
   const isHttp = (href: string) => href.startsWith("http://") || href.startsWith("https://");
 
-  
+  const handleContactClick = (info: ContactCard) => {
+    if (info.label === 'Email') {
+      handleEmailClick();
+    } else if (info.label === 'Location') {
+      // Location için hiçbir şey yapma ya da harita açabilirsin
+      return;
+    } else {
+      // Tel ve diğer linkler için
+      window.open(info.href);
+    }
+  };
+
   return (
     <section
       id={id}
@@ -127,25 +271,22 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
             <div className="space-y-4">
               {ContactInfo.map((info) => (
                 <Reveal key={info.label} className="block">
-                  {/* mailto/tel linkleri sandbox/iframe’lerde engellenmesin diye target _blank eklendi */}
-                  <m.a
-  href={info.href}
-  // http/https ise yeni sekmede aç, mailto/tel ise AÇMA
-  {...(isHttp(info.href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-  whileHover={shouldReduceMotion ? {} : { scale: 1.02, x: 8 }}
-  transition={{ duration: 0.2 }}
-  className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 md:backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
->
-  <div className={`rounded-lg bg-gradient-to-r ${info.color} p-3`}>
-    <info.icon className="h-6 w-6 text-white" />
-  </div>
-  <div>
-    <p className="text-sm text-white/60">{info.label}</p>
-    <p className="text-white font-medium group-hover:text-blue-300 transition-colors">
-      {info.value}
-    </p>
-  </div>
-</m.a>
+                  <m.button
+                    onClick={() => handleContactClick(info)}
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.02, x: 8 }}
+                    transition={{ duration: 0.2 }}
+                    className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 md:backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06] w-full text-left"
+                  >
+                    <div className={`rounded-lg bg-gradient-to-r ${info.color} p-3`}>
+                      <info.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-white/60">{info.label}</p>
+                      <p className="text-white font-medium group-hover:text-blue-300 transition-colors">
+                        {info.value}
+                      </p>
+                    </div>
+                  </m.button>
                 </Reveal>
               ))}
             </div>
@@ -292,15 +433,12 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
               let&apos;s discuss how we can work together.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild className="rounded-full bg-blue-600 px-8 py-3 text-white hover:bg-blue-700">
-                <a
-                  href={USE_GMAIL_COMPOSE ? gmailHref : "mailto:contact@bahtiyarkarakoc.com"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Mail className="mr-2 h-4 w-4" />
-                  Email Me
-                </a>
+              <Button 
+                onClick={() => setShowEmailOptions(true)}
+                className="rounded-full bg-blue-600 px-8 py-3 text-white hover:bg-blue-700"
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Email Me
               </Button>
               <Button
                 variant="outline"
@@ -315,6 +453,62 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
           </div>
         </Reveal>
       </div>
+
+      {/* Email Options Modal */}
+      {showEmailOptions && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <m.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="bg-slate-800 rounded-2xl border border-white/10 p-6 max-w-md w-full"
+          >
+            <h3 className="text-xl font-bold text-white mb-4">Choose Email Option</h3>
+            <div className="space-y-3">
+              <button
+                onClick={copyEmailToClipboard}
+                className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] text-white transition-colors"
+              >
+                <Copy className="h-5 w-5" />
+                Copy Email Address
+              </button>
+              <a
+                href={createGmailLink(formData.name, formData.email, formData.subject, formData.message)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setShowEmailOptions(false)}
+                className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] text-white transition-colors"
+              >
+                <ExternalLink className="h-5 w-5" />
+                Open Gmail
+              </a>
+              <a
+                href={createOutlookLink(formData.name, formData.email, formData.subject, formData.message)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setShowEmailOptions(false)}
+                className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] text-white transition-colors"
+              >
+                <ExternalLink className="h-5 w-5" />
+                Open Outlook
+              </a>
+              <button
+                onClick={tryDefaultMailApp}
+                className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] text-white transition-colors"
+              >
+                <Mail className="h-5 w-5" />
+                Try Default Mail App
+              </button>
+            </div>
+            <button
+              onClick={() => setShowEmailOptions(false)}
+              className="w-full mt-4 p-2 text-white/60 hover:text-white transition-colors"
+            >
+              Cancel
+            </button>
+          </m.div>
+        </div>
+      )}
     </section>
   );
 };
