@@ -11,7 +11,7 @@ export function GET() {
       <link>${baseUrl}/blog/${post.slug}</link>
       <guid isPermaLink="true">${baseUrl}/blog/${post.slug}</guid>
       <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
-      <author>bahtiyarkarakoc@gmail.com (Bahtiyar Karakoç)</author>
+      <author>contact@bahtiyarkarakoc.com (Bahtiyar Karakoç)</author>
       <category>${post.category}</category>
     </item>
   `).join('');
@@ -25,8 +25,8 @@ export function GET() {
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml"/>
-    <managingEditor>bahtiyarkarakoc@gmail.com (Bahtiyar Karakoç)</managingEditor>
-    <webMaster>bahtiyarkarakoc@gmail.com (Bahtiyar Karakoç)</webMaster>
+    <managingEditor>contact@bahtiyarkarakoc.com (Bahtiyar Karakoç)</managingEditor>
+    <webMaster>contact@bahtiyarkarakoc.com (Bahtiyar Karakoç)</webMaster>
     <image>
       <url>${baseUrl}/og-image.jpg</url>
       <title>Bahtiyar Karakoç</title>

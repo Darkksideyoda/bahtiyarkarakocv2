@@ -25,7 +25,7 @@ const ContactInfo = [
   {
     icon: MapPin,
     label: "Location",
-    value: "Istanbul, Turkey",
+    value: "Antalya, Turkey",
     href: "#",
     color: "from-purple-500 to-pink-500"
   }
