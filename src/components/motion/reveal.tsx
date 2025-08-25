@@ -1,14 +1,15 @@
 "use client";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useTransform } from "framer-motion";
 import React, { useRef } from "react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 /** Basit fade + y kaydırma */
 export function Reveal({
   children,
   y = 24,
   delay = 0,
-  duration = 0.6,
-  amount = 0.3,
+  duration = 0.3,
+  amount = 0.2,
   once = true,
   className = "",
 }: {
@@ -20,16 +21,22 @@ export function Reveal({
   once?: boolean;
   className?: string;
 }) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once, amount }}
-      transition={{ duration, ease: "easeOut", delay }}
+      transition={{ 
+        duration: shouldReduceMotion ? 0.1 : duration, 
+        ease: "easeOut", 
+        delay: shouldReduceMotion ? 0 : delay 
+      }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -49,14 +56,15 @@ export function ParallaxY({
   end?: string;
   className?: string;
 }) {
+  const shouldReduceMotion = useReducedMotion();
   const ref = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: [start as any, end as any] });
-  const y = useTransform(scrollYProgress, [0, 1], [from, to]);
+  const y = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [0, 0] : [from, to]);
   const opacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   return (
-    <motion.div ref={ref} className={className} style={{ y, opacity }}>
+    <m.div ref={ref} className={className} style={{ y, opacity }}>
       {children}
-    </motion.div>
+    </m.div>
   );
 }

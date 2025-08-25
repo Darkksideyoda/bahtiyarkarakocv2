@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Home, User, Briefcase, FolderOpen, BookOpen, Mail, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const navItems = [
   { id: "hero", label: "Home", icon: Home },
@@ -18,6 +19,7 @@ export default function FloatingNav() {
   const [activeSection, setActiveSection] = useState("hero");
   const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
   const pathname = usePathname();
 
   // Show nav after scrolling down a bit
@@ -124,14 +126,28 @@ export default function FloatingNav() {
       {/* Desktop Navigation */}
       <AnimatePresence>
         {isVisible && (
-          <motion.nav
+          <m.nav
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
             className="fixed top-6 left-1/2 z-50 hidden -translate-x-1/2 transform md:block"
           >
-            <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 py-2 backdrop-blur-md">
+            <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 py-2 md:backdrop-blur-md">
+              {/* CV Download Button */}
+              <a
+                href="/cv.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-all duration-300"
+                aria-label="Download CV"
+              >
+                <Download className="relative z-10 h-4 w-4" />
+                <span className="relative z-10">CV</span>
+              </a>
+              
+              <div className="w-px h-6 bg-white/10" />
+              
               {navItems.map((item) => {
                 const isActive = activeSection === item.id;
                 return (
@@ -145,10 +161,10 @@ export default function FloatingNav() {
                     }`}
                   >
                     {isActive && (
-                      <motion.div
+                      <m.div
                         layoutId="activeBackground"
                         className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-purple-600"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
                       />
                     )}
                     <item.icon className="relative z-10 h-4 w-4" />
@@ -178,41 +194,53 @@ export default function FloatingNav() {
                 </a>
               )}
             </div>
-          </motion.nav>
+          </m.nav>
         )}
       </AnimatePresence>
 
       {/* Mobile Navigation Button */}
       <AnimatePresence>
         {isVisible && (
-          <motion.button
+          <m.button
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-black/20 backdrop-blur-md transition-all duration-300 hover:scale-105 md:hidden"
+            className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-black/20 md:backdrop-blur-md transition-all duration-300 hover:scale-105 md:hidden"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
             {isMobileMenuOpen ? (
               <X className="h-6 w-6 text-white" />
             ) : (
               <Menu className="h-6 w-6 text-white" />
             )}
-          </motion.button>
+          </m.button>
         )}
       </AnimatePresence>
 
       {/* Mobile Navigation Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
             className="fixed bottom-24 right-6 z-40 md:hidden"
           >
-            <div className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur-md">
+            <div className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 md:backdrop-blur-md">
+              {/* Mobile CV Download */}
+              <a
+                href="/cv.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
+              >
+                <Download className="h-5 w-5" />
+                <span>Download CV</span>
+              </a>
+              
               {navItems.map((item) => {
                 const isActive = activeSection === item.id;
                 return (
@@ -252,20 +280,20 @@ export default function FloatingNav() {
                 </a>
               )}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
       {/* Mobile Menu Backdrop */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
             onClick={() => setIsMobileMenuOpen(false)}
-            className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-30 bg-black/20 md:backdrop-blur-sm md:hidden"
           />
         )}
       </AnimatePresence>

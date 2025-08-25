@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Calendar, Clock, User, Search, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import Image from "next/image";
 
 // Mock blog data - replace with your actual data source
 const blogPosts = [
@@ -79,19 +81,25 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ post, featured = false }) => {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <motion.article
+    <m.article
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
       className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-500 ${
         featured ? "md:col-span-2 md:row-span-2" : ""
       }`}
     >
       <div className="relative h-48 md:h-56 overflow-hidden">
-        <img
+        <Image
           src={post.image}
-          alt={post.title}
+          alt={`${post.title} blog post cover`}
+          width={800}
+          height={400}
+          sizes={featured ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 100vw, 33vw"}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
@@ -154,7 +162,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, featured = false }) => {
           <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
         </Link>
       </div>
-    </motion.article>
+    </m.article>
   );
 };
 
@@ -164,6 +172,7 @@ interface BlogSectionProps {
 }
 
 export const BlogSection: React.FC<BlogSectionProps> = ({ id, showAll = false }) => {
+  const shouldReduceMotion = useReducedMotion();
   const [selectedCategory, setSelectedCategory] = useState("All Posts");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -180,12 +189,13 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ id, showAll = false })
   const regularPosts = displayPosts.filter(post => !post.featured);
 
   return (
-    <section id={id} className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id={id} className="py-20 px-4 sm:px-6 lg:px-8" style={{ contentVisibility: showAll ? "auto" : undefined }}>
       <div className="max-w-7xl mx-auto">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent mb-6">
@@ -197,13 +207,14 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ id, showAll = false })
               : "Insights and experiences from my journey in software development"
             }
           </p>
-        </motion.div>
+        </m.div>
 
         {showAll && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: shouldReduceMotion ? 0.1 : 0.3, delay: shouldReduceMotion ? 0 : 0.1 }}
             className="mb-12"
           >
             {/* Search Bar */}
@@ -240,14 +251,15 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ id, showAll = false })
                 );
               })}
             </div>
-          </motion.div>
+          </m.div>
         )}
 
         {showAll && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: shouldReduceMotion ? 0.1 : 0.3, delay: shouldReduceMotion ? 0 : 0.15 }}
             className="mb-12"
           >
             <h3 className="text-2xl font-bold text-white mb-6">Featured Posts</h3>
@@ -256,13 +268,14 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ id, showAll = false })
                 <BlogCard key={post.id} post={post} featured />
               ))}
             </div>
-          </motion.div>
+          </m.div>
         )}
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: showAll ? 0.4 : 0.3 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: shouldReduceMotion ? 0.1 : 0.3, delay: shouldReduceMotion ? 0 : (showAll ? 0.2 : 0.15) }}
         >
           {showAll && <h3 className="text-2xl font-bold text-white mb-6">All Posts</h3>}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -270,13 +283,14 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ id, showAll = false })
               <BlogCard key={post.id} post={post} />
             ))}
           </div>
-        </motion.div>
+        </m.div>
 
         {!showAll && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: shouldReduceMotion ? 0.1 : 0.3, delay: shouldReduceMotion ? 0 : 0.2 }}
             className="text-center mt-12"
           >
             <Link
@@ -286,17 +300,17 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ id, showAll = false })
               View All Blog Posts
               <ChevronRight className="h-5 w-5" />
             </Link>
-          </motion.div>
+          </m.div>
         )}
 
         {showAll && filteredPosts.length === 0 && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-center py-12"
           >
             <p className="text-gray-400 text-lg">No posts found matching your criteria.</p>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </section>

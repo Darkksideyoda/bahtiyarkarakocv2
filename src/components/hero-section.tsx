@@ -1,16 +1,18 @@
 "use client";
 
 import React from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeroSocials from "./social-links";
 import HeroAvatar from "./hero-avatar";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 export default function HeroSection() {
+  const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
-  const yTitle = useTransform(scrollYProgress, [0, 0.4], [0, -40]);
-  const ySub = useTransform(scrollYProgress, [0, 0.4], [0, -20]);
+  const yTitle = useTransform(scrollYProgress, [0, 0.4], shouldReduceMotion ? [0, 0] : [0, -40]);
+  const ySub = useTransform(scrollYProgress, [0, 0.4], shouldReduceMotion ? [0, 0] : [0, -20]);
 
   const smoothScrollTo = (targetId: string) => {
     const el = document.getElementById(targetId);
@@ -40,14 +42,14 @@ export default function HeroSection() {
 <div className="relative z-10 mx-auto max-w-4xl px-4 text-center">
       <HeroAvatar />
 
-        <motion.h1
+        <m.h1
           style={{ y: yTitle }}
           className="mb-6 bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-5xl font-bold text-transparent dark:from-white dark:via-blue-300 dark:to-purple-300 sm:text-6xl lg:text-7xl"
         >
           Bahtiyar Karakoç
-        </motion.h1>
+        </m.h1>
 
-        <motion.p
+        <m.p
           style={{ y: ySub }}
           className="mb-8 text-xl font-light leading-relaxed text-gray-600 dark:text-gray-300 sm:text-2xl lg:text-3xl"
         >
@@ -55,7 +57,7 @@ export default function HeroSection() {
             Fullstack
           </span>
           <span className="block sm:inline"> Enthusiast Computer Engineer</span>
-        </motion.p>
+        </m.p>
 
         <div className="mb-16 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button
@@ -90,21 +92,21 @@ export default function HeroSection() {
         </div>
 
         {/* Scroll indicator */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1 }}
+          transition={{ duration: shouldReduceMotion ? 0.1 : 0.8, delay: shouldReduceMotion ? 0 : 1 }}
           className="absolute left-1/2 transform -translate-x-1/2"
         >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
+          <m.div
+            animate={shouldReduceMotion ? {} : { y: [0, 10, 0] }}
+            transition={shouldReduceMotion ? {} : { duration: 2, repeat: Infinity }}
             className="flex flex-col items-center text-gray-500 dark:text-gray-400"
           >
             <span className="text-sm mb-2">Scroll to explore</span>
             <ArrowDown className="h-5 w-5" />
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </div>
     </section>
   );

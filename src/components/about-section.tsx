@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Brain, Zap, Code as CodeIcon, Smartphone } from "lucide-react";
 import { ParallaxY, Reveal } from "@/components/motion/reveal";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import {
   SiReact,
   SiTypescript,
@@ -90,29 +91,28 @@ const TechChip: React.FC<{
   tech: { name: string; icon: any; color: string };
   index: number;
 }> = ({ tech, index }) => {
+  const shouldReduceMotion = useReducedMotion();
   const IconComponent = tech.icon;
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, scale: 0.8 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, amount: 0.5 }}
+      viewport={{ once: true, amount: 0.2 }}
       transition={{ 
-        duration: 0.4, 
-        delay: index * 0.05,
-        type: "spring",
-        stiffness: 100
+        duration: shouldReduceMotion ? 0.1 : 0.3, 
+        delay: shouldReduceMotion ? 0 : index * 0.02,
       }}
-      whileHover={{ scale: 1.05, y: -2 }}
+      whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
       className="group relative"
     >
       {/* Glow effect on hover */}
       <div 
-        className="absolute inset-0 rounded-xl opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-30"
+        className="absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-30 hidden md:block"
         style={{ backgroundColor: tech.color }}
       />
       
-      <div className="relative flex items-center gap-2 sm:gap-3 rounded-lg sm:rounded-xl border border-white/10 bg-white/[0.03] px-2 py-2 sm:px-4 sm:py-3 backdrop-blur-sm transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/[0.06]">
+      <div className="relative flex items-center gap-2 sm:gap-3 rounded-lg sm:rounded-xl border border-white/10 bg-white/[0.03] px-2 py-2 sm:px-4 sm:py-3 md:backdrop-blur-sm transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/[0.06]">
         {IconComponent && (
           <IconComponent 
             className="h-4 w-4 sm:h-5 sm:w-5 transition-colors duration-300 flex-shrink-0" 
@@ -123,7 +123,7 @@ const TechChip: React.FC<{
           {tech.name}
         </span>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 
@@ -131,13 +131,14 @@ const SkillCategory: React.FC<{
   category: typeof skillCategories[0];
   index: number;
 }> = ({ category, index }) => {
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.6, delay: index * 0.2 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: shouldReduceMotion ? 0.1 : 0.3, delay: shouldReduceMotion ? 0 : index * 0.1 }}
       className="space-y-6"
     >
       {/* Category Header */}
@@ -156,13 +157,15 @@ const SkillCategory: React.FC<{
           <TechChip key={tech.name} tech={tech} index={techIndex} />
         ))}
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 
 export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section id={id} className="relative w-full py-24">
+    <section id={id} className="relative w-full py-24" style={{ contentVisibility: "auto" }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">
@@ -216,17 +219,17 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
                   { icon: CodeIcon, text: "Clean, maintainable code" },
                   { icon: Smartphone, text: "User-focused design" },
                 ].map((item, index) => (
-                  <motion.div
+                  <m.div
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, amount: 0.5 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: shouldReduceMotion ? 0.1 : 0.3, delay: shouldReduceMotion ? 0 : index * 0.05 }}
                     className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.02] p-3"
                   >
                     <item.icon className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400 flex-shrink-0" />
                     <span className="text-sm sm:text-base text-white/80">{item.text}</span>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
             </Reveal>
@@ -255,25 +258,25 @@ export const AboutSection: React.FC<{ id?: string }> = ({ id = "about" }) => {
               { number: "5+", label: "Technologies Mastered" },
               { number: "100%", label: "Passion for Code" },
             ].map((stat, index) => (
-              <motion.div
+              <m.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="text-center rounded-lg sm:rounded-xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 backdrop-blur-sm"
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: shouldReduceMotion ? 0.1 : 0.3, delay: shouldReduceMotion ? 0 : index * 0.05 }}
+                className="text-center rounded-lg sm:rounded-xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 md:backdrop-blur-sm"
               >
-                <motion.div
+                <m.div
                   initial={{ scale: 0 }}
                   whileInView={{ scale: 1 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 + 0.2, type: "spring" }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: shouldReduceMotion ? 0.1 : 0.3, delay: shouldReduceMotion ? 0 : index * 0.05 + 0.1 }}
                   className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
                 >
                   {stat.number}
-                </motion.div>
+                </m.div>
                 <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-white/70">{stat.label}</p>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </Reveal>

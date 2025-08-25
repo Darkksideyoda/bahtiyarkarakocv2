@@ -21,7 +21,20 @@ export async function generateMetadata(
   return {
     title: `${post.title} - Bahtiyar Karakoç`,
     description: post.excerpt,
+    keywords: post.tags,
+    authors: [{ name: post.author.name }],
     openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt,
+      publishedTime: post.publishedAt,
+      modifiedTime: post.updatedAt || post.publishedAt,
+      authors: [post.author.name],
+      tags: post.tags,
+      images: post.imageUrl ? [post.imageUrl] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
       title: post.title,
       description: post.excerpt,
       images: post.imageUrl ? [post.imageUrl] : [],
@@ -41,6 +54,37 @@ export default async function BlogPost(
     <main className="relative">
       <SiteBackground />
       <FloatingNav />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: post.title,
+            description: post.excerpt,
+            image: post.imageUrl,
+            datePublished: post.publishedAt,
+            dateModified: post.updatedAt || post.publishedAt,
+            author: {
+              "@type": "Person",
+              name: post.author.name,
+              image: post.author.avatar,
+            },
+            publisher: {
+              "@type": "Person",
+              name: "Bahtiyar Karakoç",
+            },
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": `https://bahtiyarkarakoc.dev/blog/${post.slug}`,
+            },
+            keywords: post.tags.join(", "),
+            articleSection: post.category,
+            wordCount: post.content.split(" ").length,
+            timeRequired: `PT${post.readingTime}M`,
+          }),
+        }}
+      />
       <BlogPostPage post={post} />
     </main>
   );

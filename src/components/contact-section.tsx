@@ -1,24 +1,25 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ParallaxY, Reveal } from "@/components/motion/reveal";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const ContactInfo = [
   {
     icon: Mail,
     label: "Email",
-    value: "bahtiyar.karakoc@example.com",
-    href: "mailto:bahtiyar.karakoc@example.com",
+    value: "bahtiyarkarakoc@gmail.com",
+    href: "mailto:bahtiyarkarakoc@gmail.com",
     color: "from-blue-500 to-cyan-500"
   },
   {
     icon: Phone,
     label: "Phone",
-    value: "+90 (555) 123-4567",
-    href: "tel:+905551234567",
+    value: "+90 (534) 123-4567",
+    href: "tel:+905341234567",
     color: "from-green-500 to-emerald-500"
   },
   {
@@ -46,11 +47,13 @@ const SocialLinks = [
 ];
 
 export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) => {
+  const shouldReduceMotion = useReducedMotion();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
-    message: ""
+    message: "",
+    honeypot: "" // Anti-bot field
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -63,13 +66,19 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Honeypot check
+    if (formData.honeypot) {
+      return; // Bot detected
+    }
+    
     setIsSubmitting(true);
     
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     // Reset form
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setFormData({ name: "", email: "", subject: "", message: "", honeypot: "" });
     setIsSubmitting(false);
     
     // You can integrate with your preferred form handling service here
@@ -77,7 +86,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
   };
 
   return (
-    <section id={id} className="relative w-full py-24">
+    <section id={id} className="relative w-full py-24" style={{ contentVisibility: "auto" }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">
@@ -105,11 +114,11 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
             <div className="space-y-4">
               {ContactInfo.map((info, index) => (
                 <Reveal key={info.label} className="block">
-                  <motion.a
+                  <m.a
                     href={info.href}
-                    whileHover={{ scale: 1.02, x: 8 }}
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.02, x: 8 }}
                     transition={{ duration: 0.2 }}
-                    className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
+                    className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 md:backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
                   >
                     <div className={`rounded-lg bg-gradient-to-r ${info.color} p-3`}>
                       <info.icon className="h-6 w-6 text-white" />
@@ -120,7 +129,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                         {info.value}
                       </p>
                     </div>
-                  </motion.a>
+                  </m.a>
                 </Reveal>
               ))}
             </div>
@@ -130,14 +139,15 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
               <h4 className="text-lg font-semibold text-white mb-4">Connect With Me</h4>
               <div className="flex gap-4">
                 {SocialLinks.map((social) => (
-                  <motion.a
+                  <m.a
                     key={social.label}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="group relative flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.1, y: -2 }}
+                    whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
+                    className="group relative flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] md:backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
+                    aria-label={social.label}
                   >
                     <social.icon className="h-6 w-6 text-white/80 group-hover:text-white transition-colors" />
                     
@@ -145,7 +155,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                     <div className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-lg bg-black/80 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
                       {social.label}
                     </div>
-                  </motion.a>
+                  </m.a>
                 ))}
               </div>
             </Reveal>
@@ -159,6 +169,17 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
 
             <Reveal>
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Honeypot field - hidden from users */}
+                <input
+                  type="text"
+                  name="honeypot"
+                  value={formData.honeypot}
+                  onChange={handleInputChange}
+                  style={{ display: "none" }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+                
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-2">
@@ -171,7 +192,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                       required
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-white placeholder-white/50 backdrop-blur-sm transition-all duration-300 focus:border-blue-400 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-blue-400/20"
+                      className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-white placeholder-white/50 md:backdrop-blur-sm transition-all duration-300 focus:border-blue-400 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-blue-400/20"
                       placeholder="Your name"
                     />
                   </div>
@@ -186,8 +207,8 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                       required
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-white placeholder-white/50 backdrop-blur-sm transition-all duration-300 focus:border-blue-400 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-blue-400/20"
-                      placeholder="your.email@example.com"
+                      className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-white placeholder-white/50 md:backdrop-blur-sm transition-all duration-300 focus:border-blue-400 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-blue-400/20"
+                      placeholder="your.email@gmail.com"
                     />
                   </div>
                 </div>
@@ -203,7 +224,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                     required
                     value={formData.subject}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-white placeholder-white/50 backdrop-blur-sm transition-all duration-300 focus:border-blue-400 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-blue-400/20"
+                    className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-white placeholder-white/50 md:backdrop-blur-sm transition-all duration-300 focus:border-blue-400 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-blue-400/20"
                     placeholder="What's this about?"
                   />
                 </div>
@@ -219,7 +240,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                     rows={6}
                     value={formData.message}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-white placeholder-white/50 backdrop-blur-sm transition-all duration-300 focus:border-blue-400 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-blue-400/20 resize-none"
+                    className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-white placeholder-white/50 md:backdrop-blur-sm transition-all duration-300 focus:border-blue-400 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-blue-400/20 resize-none"
                     placeholder="Tell me about your project or idea..."
                   />
                 </div>
@@ -227,7 +248,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-3 text-white font-medium shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-purple-700 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-3 text-white font-medium shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-purple-700 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 focus-visible:ring-2 focus-visible:ring-blue-400/50"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">
@@ -248,7 +269,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
 
         {/* Call to Action */}
         <Reveal className="mt-16 text-center">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-sm">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:backdrop-blur-sm">
             <MessageCircle className="mx-auto mb-4 h-12 w-12 text-blue-400" />
             <h3 className="text-2xl font-bold text-white mb-4">
               Ready to Start a Project?
@@ -263,7 +284,7 @@ export const ContactSection: React.FC<{ id?: string }> = ({ id = "contact" }) =>
                 asChild
                 className="rounded-full bg-blue-600 px-8 py-3 text-white hover:bg-blue-700"
               >
-                <a href="mailto:bahtiyar.karakoc@example.com">
+                <a href="mailto:bahtiyarkarakoc@gmail.com">
                   <Mail className="mr-2 h-4 w-4" />
                   Email Me
                 </a>

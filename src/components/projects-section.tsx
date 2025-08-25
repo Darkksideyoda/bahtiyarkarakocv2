@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ExternalLink, Github, ChevronRight, Code, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ParallaxY, Reveal } from "@/components/motion/reveal";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import Image from "next/image";
 
 export type ProjectItem = {
   id: string;
@@ -78,6 +80,7 @@ const ProjectCard: React.FC<{
   index: number;
   featured?: boolean;
 }> = ({ project, index, featured = false }) => {
+  const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
 
   const statusColors = {
@@ -97,11 +100,11 @@ const ProjectCard: React.FC<{
   const CategoryIcon = categoryIcons[project.category];
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: shouldReduceMotion ? 0.1 : 0.3, delay: shouldReduceMotion ? 0 : index * 0.05 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06] ${
@@ -118,12 +121,19 @@ const ProjectCard: React.FC<{
       {/* Image */}
       {project.imageUrl && (
         <div className="relative h-48 overflow-hidden">
-          <motion.img
-            src={project.imageUrl}
-            alt={project.title}
-            className="h-full w-full object-cover transition-transform duration-500"
-            animate={{ scale: isHovered ? 1.05 : 1 }}
-          />
+          <m.div
+            animate={shouldReduceMotion ? {} : { scale: isHovered ? 1.05 : 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Image
+              src={project.imageUrl}
+              alt={`${project.title} project screenshot`}
+              width={800}
+              height={400}
+              sizes={featured ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 100vw, 25vw"}
+              className="h-full w-full object-cover"
+            />
+          </m.div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         </div>
       )}
@@ -189,13 +199,13 @@ const ProjectCard: React.FC<{
       </div>
 
       {/* Hover effect */}
-      <motion.div
+      <m.div
         className="absolute inset-0 rounded-2xl border border-blue-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{
           background: "linear-gradient(135deg, rgba(59,130,246,0.05), rgba(168,85,247,0.05))"
         }}
       />
-    </motion.div>
+    </m.div>
   );
 };
 
@@ -222,7 +232,7 @@ export const ProjectsSection: React.FC<{
   const regularProjects = filteredProjects.filter(p => !p.featured);
 
   return (
-    <section id={id} className="relative w-full py-24">
+    <section id={id} className="relative w-full py-24" style={{ contentVisibility: "auto" }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">
