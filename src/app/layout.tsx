@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://bahtiyarkarakoc.dev'),
+  metadataBase: new URL('https://bahtiyarkarakoc.com'),
   title: "Bahtiyar Karakoç – Software Engineer (React/TS)",
   description: "Passionate Computer Engineer with 2+ years of experience in software development, specializing in React, TypeScript, and AI-powered solutions.",
   keywords: ["Software Engineer", "React", "TypeScript", "Next.js", "Full Stack Developer", "AI", "Indoor Mapping"],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://bahtiyarkarakoc.dev",
+    url: "https://bahtiyarkarakoc.com",
     title: "Bahtiyar Karakoç – Software Engineer (React/TS)",
     description: "Passionate Computer Engineer with 2+ years of experience in software development, specializing in React, TypeScript, and AI-powered solutions.",
     siteName: "Bahtiyar Karakoç Portfolio",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://bahtiyarkarakoc.dev",
+    canonical: "https://bahtiyarkarakoc.com",
     types: {
       'application/rss+xml': [
         { url: '/rss.xml', title: 'Bahtiyar Karakoç Blog RSS Feed' }
@@ -83,7 +83,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Person",
               name: "Bahtiyar Karakoç",
-              url: "https://bahtiyarkarakoc.dev",
+              url: "https://bahtiyarkarakoc.com",
               jobTitle: "Software Engineer",
               worksFor: {
                 "@type": "Organization",

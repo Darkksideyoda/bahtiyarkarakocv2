@@ -4,7 +4,7 @@ export function GET() {
   const robotsTxt = `User-agent: *
 Allow: /
 
-Sitemap: https://bahtiyarkarakoc.dev/sitemap.xml`;
+Sitemap: https://bahtiyarkarakoc.com/sitemap.xml`;
 
   return new NextResponse(robotsTxt, {
     headers: {

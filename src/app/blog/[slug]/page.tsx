@@ -76,7 +76,7 @@ export default async function BlogPost(
             },
             mainEntityOfPage: {
               "@type": "WebPage",
-              "@id": `https://bahtiyarkarakoc.dev/blog/${post.slug}`,
+              "@id": `https://bahtiyarkarakoc.com/blog/${post.slug}`,
             },
             keywords: post.tags.join(", "),
             articleSection: post.category,

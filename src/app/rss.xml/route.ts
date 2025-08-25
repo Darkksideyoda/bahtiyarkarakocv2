@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { blogPosts } from '@/data/blog-posts';
 
 export function GET() {
-  const baseUrl = 'https://bahtiyarkarakoc.dev';
+  const baseUrl = 'https://bahtiyarkarakoc.com';
   
   const rssItems = blogPosts.map((post) => `
     <item>
