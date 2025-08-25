@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { Home, User, Briefcase, FolderOpen, BookOpen, Mail, Menu, X } from "lucide-react";
+import { Home, User, Briefcase, FolderOpen, BookOpen, Mail, Menu, X, Download } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
