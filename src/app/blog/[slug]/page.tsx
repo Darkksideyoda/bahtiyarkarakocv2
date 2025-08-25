@@ -5,17 +5,13 @@ import { BlogPostPage } from "@/components/blog-post-page";
 import SiteBackground from "@/components/site-background";
 import FloatingNav from "@/components/floating-nav";
 
-interface BlogPostPageProps {
-  params: { slug: string };
-}
-
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
     slug: post.slug,
   }));
 }
 
-export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = blogPosts.find((post) => post.slug === params.slug);
 
   if (!post) {
@@ -35,7 +31,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   };
 }
 
-export default function BlogPost({ params }: BlogPostPageProps) {
+export default function BlogPost({ params }: { params: { slug: string } }) {
   const post = blogPosts.find((post) => post.slug === params.slug);
 
   if (!post) {
