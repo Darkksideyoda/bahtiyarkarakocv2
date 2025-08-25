@@ -6,6 +6,7 @@ import { ArrowLeft, Calendar, Clock, User, Tag, Share2, Heart, Eye } from "lucid
 import { Button } from "@/components/ui/button";
 import { BlogPost } from "@/types/blog";
 import Link from "next/link";
+import Image from "next/image";
 import { Reveal } from "@/components/motion/reveal";
 
 interface BlogPostPageProps {
