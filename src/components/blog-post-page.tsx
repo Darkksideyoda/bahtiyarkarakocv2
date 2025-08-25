@@ -80,9 +80,12 @@ export const BlogPostPage: React.FC<BlogPostPageProps> = ({ post }) => {
         {post.imageUrl && (
           <Reveal>
             <div className="relative mb-8 h-64 sm:h-80 lg:h-96 overflow-hidden rounded-2xl">
-              <img
+              <Image
                 src={post.imageUrl}
                 alt={post.title}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
                 className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
@@ -185,9 +188,11 @@ export const BlogPostPage: React.FC<BlogPostPageProps> = ({ post }) => {
           <div className="mt-16 rounded-2xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-sm">
             <div className="flex items-start gap-4">
               {post.author.avatar && (
-                <img
+                <Image
                   src={post.author.avatar}
                   alt={post.author.name}
+                  width={64}
+                  height={64}
                   className="h-16 w-16 rounded-full border-2 border-white/10"
                 />
               )}

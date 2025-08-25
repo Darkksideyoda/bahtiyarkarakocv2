@@ -60,12 +60,12 @@ const ProjectCard: React.FC<{
           <m.div
             animate={shouldReduceMotion ? {} : { scale: isHovered ? 1.05 : 1 }}
             transition={{ duration: 0.5 }}
+            className="relative h-full w-full"
           >
             <Image
               src={project.imageUrl}
               alt={`${project.title} project screenshot`}
-              width={800}
-              height={400}
+              fill
               sizes={featured ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 100vw, 25vw"}
               className="h-full w-full object-cover"
             />

@@ -46,12 +46,11 @@ export default function HeroAvatar({
   animate={shouldReduceMotion ? {} : { backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
   transition={shouldReduceMotion ? {} : { duration: 1, repeat: Infinity, ease: "linear" }}
 >
-  <div className="rounded-full overflow-hidden bg-black/20">
+  <div className="rounded-full overflow-hidden bg-black/20 relative h-28 w-28 sm:h-32 sm:w-32 lg:h-40 lg:w-40">
     <Image
       src={src}
       alt={alt}
-      width={320}
-      height={320}
+      fill
       priority
       sizes="(max-width: 640px) 112px, (max-width: 1024px) 128px, 160px"
       className="h-full w-full object-cover"
